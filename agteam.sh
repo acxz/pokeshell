@@ -12,7 +12,7 @@ team_entries=("bulbasaur" "charmander" "squirtle" "charizard-megax")
 #team_entries=("squirtle" "pikachu")
 
 _type=normal
-_type=shiny
+#_type=shiny
 
 _width=0
 min_frame=100
@@ -47,61 +47,66 @@ for _i in "${team_entries[@]}"; do
     # No need to sync with the smallest frame gif
     if [ "${_frame}" != "${min_frame}" ]; then
 
-        # Ceiling division
-        _div=$(((_frame + min_frame) / min_frame))
+        frame_diff=$(( _frame - min_frame ))
+        _div=$((_frame / min_frame))
         idx_del_str=""
 
-        # Use another interval for missing frames
-        missing_frames=$((min_frame - (_frame + _div) / _div))
+        # Use another interval for extra frames
+        extra_frames=$((_frame / _div - min_frame ))
         # Division by zero guard
-        if [ "$missing_frames" != 0 ]; then
-            missing_frames_div=$(((_frame + missing_frames) / missing_frames))
+        if [ "$extra_frames" != 0 ]; then
+            extra_frames_div=$((_frame / extra_frames))
         fi
 
-        # Loop through frames to see which ones to delete
-        prev_min_frame_num=-1
-        prev_missing_frame_num=-1
-        added_missing_frame=0
-        for (( _frame_num=0; _frame_num<=_frame; _frame_num++ )); do
-            min_frame_num=$((_frame_num / _div))
+        # Loop through diff frames to see which ones to delete
+        prev_extra_frame_num=-1
+        added_extra_frame=0
+        for (( min_frame_num=0; min_frame_num<=frame_diff; min_frame_num++ )); do
+            _frame_num=$(( min_frame_num * _frame / frame_diff ))
             # Division by zero guard
-            if [ "$missing_frames" != 0 ]; then
-                missing_frame_num=$((_frame_num / missing_frames_div))
+            if [ "$extra_frames" != 0 ]; then
+                extra_frame_num=$((_frame_num / extra_frames_div))
 
-                # Reset missing frame counter
-                if [ "$missing_frame_num" != "$prev_missing_frame_num" ]; then
-                    added_missing_frame=0
+                # Reset extra frame counter
+                if [ "$extra_frame_num" != "$prev_extra_frame_num" ]; then
+                    added_extra_frame=0
                 fi
             else
-                missing_frame_num="${prev_missing_frame_num}"
+                extra_frame_num="${prev_extra_frame_num}"
             fi
 
-            # Check if frame has been added for current min frame interval
-            if [ "$min_frame_num" == "$prev_min_frame_num" ] && \
-                [ "$added_missing_frame" == 1 ]; then
-                # Check if frame has been added for current missing frame interval
+            # Remove frame for current min frame interval
+            if [ "$added_extra_frame" == 1 ]; then
+                # Check if frame has been added for current extra frame interval
                 idx_del_str="$idx_del_str$_frame_num,"
             fi
 
-            # Check if frame has been added for current missing frame interval
-            if [ "$missing_frame_num" == "$prev_missing_frame_num" ]; then
-                added_missing_frame=1
+            # Check if frame has been added for current extra frame interval
+            if [ "$extra_frame_num" == "$prev_extra_frame_num" ]; then
+                added_extra_frame=1
             fi
 
-            prev_min_frame_num="${min_frame_num}"
-            prev_missing_frame_num="${missing_frame_num}"
+            prev_extra_frame_num="${extra_frame_num}"
+        done
+
+        # Delete frames
+        if [ "$idx_del_str" != "" ]; then
+            convert "$_i.gif" -delete "$idx_del_str" "$_i.gif"
+        fi
+
+        # Delete extra frames from gif
+        new_frame=$(identify "$_i.gif" | wc -l)
+        still_extra=$(( new_frame - min_frame ))
+        extra_idx_del_str=""
+        for (( _extra_num=0; _extra_num<still_extra; _extra_num++ )); do
+            idx=$(( _extra_num * new_frame / still_extra))
+            extra_idx_del_str="$extra_idx_del_str$idx,"
         done
 
         # Delete extra frames
-        convert "$_i.gif" -delete "$idx_del_str" "$_i.gif"
-
-        # Pad gif with duplicates for missing frames
-        new_frame=$(identify "$_i.gif" | wc -l)
-        still_missing=$((min_frame - $(identify "$_i.gif" | wc -l)))
-        for (( _missing_num=0; _missing_num<still_missing; _missing_num++ )); do
-            idx=$(( _missing_num * (new_frame) / (still_missing)))
-            convert "$_i.gif" "$_i.gif[$idx]" -insert $idx "$_i.gif"
-        done
+        if [ "$extra_idx_del_str" != "" ]; then
+            convert "$_i.gif" -delete "$extra_idx_del_str" "$_i.gif"
+        fi
 
         fi
     _loop_num=$((_loop_num + 1))
