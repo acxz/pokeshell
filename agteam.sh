@@ -6,7 +6,7 @@ echo "Starting Team Display"
 #team_entries=("bulbasaur" "charmander" "squirtle" "pikachu" "giratina" "zubat" "shaymin")
 team_entries=("bulbasaur" "charmander" "squirtle" "charizard-megax")
 #team_entries=("munchlax" "jigglypuff" "rayquaza" "gyarados")
-team_entries=("zapdos" "articuno" "moltres" "lugia" "zubat" "yveltal")
+#team_entries=("zapdos" "articuno" "moltres" "lugia" "zubat" "yveltal")
 #team_entries=("lugia" "squirtle")
 #team_entries=("giratina" "squirtle")
 #team_entries=("giratina" "squirtle")
@@ -17,7 +17,6 @@ _type=normal
 
 _width=0
 min_frame=100
-frame_sum=0
 
 for _i in "${team_entries[@]}"; do
     # Curl images
@@ -40,13 +39,8 @@ for _i in "${team_entries[@]}"; do
     _frame=$(identify "$_i.gif" | wc -l)
     frames+=("${_frame}")
     (( _frame < min_frame )) && min_frame=${_frame}
-    frame_sum=$(( frame_sum + _frame ))
 done
 
-# logic to pick avg/min/in between
-#avg_frame=$(( (frame_sum + ${#team_entries[@]} / 2) / ${#team_entries[@]} ))
-#factor=10
-#specified_frame=$(( min_frame + (avg_frame - min_frame) / factor ))
 specified_frame=$min_frame
 
 _loop_num=0
@@ -74,8 +68,6 @@ for _i in "${team_entries[@]}"; do
         done
 
     fi
-
-    identify "$_i.gif" | wc -l
 
     _loop_num=$((_loop_num + 1))
 done
