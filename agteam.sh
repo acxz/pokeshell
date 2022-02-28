@@ -4,11 +4,15 @@ echo "Starting Team Display"
 
 #team_entries=(7 4 1 25)
 #team_entries=("bulbasaur" "charmander" "squirtle" "pikachu" "giratina" "zubat" "shaymin")
-#team_entries=("bulbasaur" "charmander" "squirtle" "pikachu")
-team_entries=("zapdos" "articuno" "moltres" "lugia")
+team_entries=("bulbasaur" "charmander" "squirtle" "charizard-megax")
+#team_entries=("munchlax" "jigglypuff" "rayquaza" "gyarados")
+#team_entries=("zapdos" "articuno" "moltres" "lugia" "zubat" "yveltal")
 #team_entries=("lugia" "squirtle")
 #team_entries=("giratina" "squirtle")
 #team_entries=("squirtle" "pikachu")
+
+_type=normal
+_type=shiny
 
 _width=0
 min_frame=100
@@ -16,7 +20,7 @@ min_frame=100
 for _i in "${team_entries[@]}"; do
     # Curl images
     #curl -sL "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/$_i.gif" -o "${_i}.gif"
-    curl -sL "https://projectpokemon.org/images/normal-sprite/$_i.gif" -o "${_i}.gif"
+    curl -sL "https://projectpokemon.org/images/$_type-sprite/$_i.gif" -o "${_i}.gif"
 
     # Flip to level the base of each image
     convert -flip "${_i}.gif" "$_i.gif"
@@ -74,7 +78,7 @@ for _i in "${team_entries[@]}"; do
 
             # Check if frame has been added for current min frame interval
             if [ "$min_frame_num" == "$prev_min_frame_num" ] && \
-               [ "$added_missing_frame" == 1 ]; then
+                [ "$added_missing_frame" == 1 ]; then
                 # Check if frame has been added for current missing frame interval
                 idx_del_str="$idx_del_str$_frame_num,"
             fi
@@ -92,14 +96,11 @@ for _i in "${team_entries[@]}"; do
         convert "$_i.gif" -delete "$idx_del_str" "$_i.gif"
 
         # Pad gif with duplicates for missing frames
+        new_frame=$(identify "$_i.gif" | wc -l)
         still_missing=$((min_frame - $(identify "$_i.gif" | wc -l)))
-        echo frame$_frame
         for (( _missing_num=0; _missing_num<still_missing; _missing_num++ )); do
-            # TODO: dup evenly
-            idx=$(( _missing_num * (_frame - 1) / 2))
-            echo idx$idx
-            #convert "$_i.gif[$idx]" "$_i.gif" "$_i.gif"
-            convert "$_i.gif[0]" "$_i.gif" "$_i.gif"
+            idx=$(( _missing_num * (new_frame) / (still_missing)))
+            convert "$_i.gif" "$_i.gif[$idx]" -insert $idx "$_i.gif"
         done
 
         fi
@@ -108,7 +109,6 @@ done
 
 _loop_num=0
 for _i in "${team_entries[@]}"; do
-    # FIXME: figure out how to add them all at once instead of one at a time
     # Create first combined gif
     if [[ ${_loop_num} == 1 ]]; then
         convert "${team_entries[0]}.gif" -repage "${sum_widths[${_loop_num}]}"x"${max_height}" -coalesce \
@@ -131,11 +131,12 @@ done
 # Flip image back
 convert -flip t.gif t.gif
 
-# Display
-timg t.gif # works with genV 2d and gen8 3d sprites
-
 # Cleanup
 for _i in "${team_entries[@]}"; do
     rm -f "${_i}.gif"
 done
-# rm -f t.gif
+
+# Display
+timg t.gif
+
+rm -f t.gif
