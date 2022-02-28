@@ -9,6 +9,7 @@ team_entries=("bulbasaur" "charmander" "squirtle" "charizard-megax")
 team_entries=("zapdos" "articuno" "moltres" "lugia" "zubat" "yveltal")
 #team_entries=("lugia" "squirtle")
 #team_entries=("giratina" "squirtle")
+#team_entries=("giratina" "squirtle")
 #team_entries=("squirtle" "pikachu")
 
 _type=normal
@@ -42,10 +43,10 @@ for _i in "${team_entries[@]}"; do
     frame_sum=$(( frame_sum + _frame ))
 done
 
-# TODO logic to pick avg/min/in between
-avg_frame=$(( (frame_sum + ${#team_entries[@]} / 2) / ${#team_entries[@]} ))
-echo "$min_frame"
-echo "$avg_frame"
+# logic to pick avg/min/in between
+#avg_frame=$(( (frame_sum + ${#team_entries[@]} / 2) / ${#team_entries[@]} ))
+#factor=10
+#specified_frame=$(( min_frame + (avg_frame - min_frame) / factor ))
 specified_frame=$min_frame
 
 _loop_num=0
@@ -68,7 +69,7 @@ for _i in "${team_entries[@]}"; do
         extra_frames=$(( specified_frame - _frame ))
 
         for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
-            idx=$(( _extra_num * specified_frame / extra_frames ))
+            idx=$(( _extra_num * _frame / extra_frames + _extra_num ))
             convert "$_i.gif" "$_i.gif[$idx]" -insert $idx "$_i.gif"
         done
 
