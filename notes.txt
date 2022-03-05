@@ -1,9 +1,5 @@
-What's the name? pts?
-
-Checkout for speed ups:
-https://github.com/dylanaraps/pure-bash-bible
-
-is it worth syncing to average frame than min frame?
+# poketerm maybe pokeshell? pts for now
+there are more poketerm projects than pokeshell
 
 Need frontend
 - dex num and name
@@ -12,11 +8,7 @@ Need frontend
     i.e. 25-megax == pikachu-megax
     note keep variants modifier as text since nums are hard
     this might be a bit more dependent on the url of how we are fetching img tho
-    with shiny prefix it i.e. shiny-pikachu, shiny-pikachu-megax, shiny-25,
-    also allow s-24 or s-pikachu
-    delimit on the dash for what kind of poke or maybe use forward slash to
     match pokeapi url?
-    delimit on space for pokes
 - random
     with specific gens and small chance of shiny and bit more chance of variants
     use random like a placeholder and expand later
@@ -27,10 +19,9 @@ Need frontend
     `shiny-random-1,6`
     can't specify random forms tho, maybe u can idk?
     maybe `shiny-random-1,6-mega` or `random-1,6-alolan`
-- small sprites
-    this is flag to make all specified pokes use small art
-    pokeapi doesn't have small shiny sprites either,
-    use https://github.com/msikma/pokesprite
+- add autocomplete for flags
+- add autocomplete for pokemon
+- for 404 use question mark unknown
 
 of course this is a list (keep on adding to display more pokes!)
 
@@ -55,17 +46,11 @@ other cool stuff:
     https://github.com/msikma/spinda-spots for small sprites
     what about larger ones? idk
 
-deps:
-frontend: bash, curl
-backend: bash imagemagick catimg/timg
-
-update imagemagick calls? convert -> magick
-
 gotta wait for new gifs from projectpokemon to be part of pokeapi, till then
 use different source for gif (projectpokemon) and another one for img (pokeapi)
 also gotta wait for shiny sprites to be part of pokeapi from msikma/pokesprite
 
-get issues to track them
+get upstream issues to track them
 
 separate img/gif magick from curl call/frontend
 frontend should just pull in the img/gifs
@@ -74,15 +59,12 @@ this list is passed to backend code
 Similar projects!
 pokemon-colorscripts
 pokeget
-
-Other pokemon terminal projects:
-https://github.com/rmccorm4/Pokefetch
-https://github.com/HRKings/pokemonsay-newgenerations
-
-Dependent projects!
-PokeAPI
-ProjectPokemon
-msikma/sprites
+pokeshell
 
 Add self to: awesome-pokemon
 https://github.com/tobiasbueschel/awesome-pokemon
+crosspost on /r/pokemon, /r/unixporn, /r/linux
+
+Add option to use cache and save downloaded images locally
+
+Make sure all pokemon is with special e
