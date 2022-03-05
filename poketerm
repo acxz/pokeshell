@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+# Default values
+use_small=0
+use_big=1
+use_ani=0
+
+#Function that prints out the help text
+# TODO
+# formatting for the help strings
+fmt_help="  %-20s\t%-54s\n"
+_help() {
+    echo "pts: Show Pokemon sprites in the terminal"
+    # TODO: Show a little pokeball ascii here
+
+    echo ""
+    echo "Usage: pts [OPTION] POKEMON..."
+    printf "${fmt_help}" \
+        "-b, --big" "Display big sprites (default)" \
+        "-a, --animation" "Display animated sprites" \
+        "-s, --small" "Display small sprites" \
+        "-h, --help" "Print this help." \
+
+    echo ""
+    echo "Shiny: prepend \"s{hiny}:\" to POKEMON"
+    echo ""
+
+    echo "Examples: pts pikachu"
+    echo "          pts -s s:bulbasaur"
+    echo "          pts -b charizard s:ho-oh moltres"
+    echo "          pts -a shiny:squirtle"
+}
+
+
+# Handling command line arguments
+case "$#" in
+    0)
+        # display help if no arguments are given
+        _help
+        ;;
+    1)
+        # Check flag
+        case $1 in
+            -b | --big | big | -a | --animation | -s | --small)
+                echo "You forgot to mention any Pokemon! See help:"
+                echo ""
+                _help
+                ;;
+            -h | --help | help)
+                _help
+                ;;
+            *)
+                echo "Incorrect option! See help:"
+                echo ""
+                _help
+                ;;
+        esac
+        ;;
+
+    *)
+        if [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
+            use_small=1
+        elif [ "$1" == '-a' ] || [ "$1" == '--animation' ]; then
+            use_ani=1
+        fi
+
+        # Parse pokemon
+        pokemon_images=()
+        for pokemon_desc in "${@:2}"; do
+            # Parse for shiny
+            _type=regular
+            IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
+            if [ ${#pokemon_desc_arr[@]} == 1 ]; then
+                pokemon=${pokemon_desc_arr[0]}
+            else
+                shiny_str=${pokemon_desc_arr[0]}
+                pokemon=${pokemon_desc_arr[1]}
+                if [ -z "$shiny_str" ]; then
+                    shiny_str='not_shiny'
+                fi
+
+                if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
+                    _type=shiny
+                else
+                    echo "Incorrect shiny specifier! See help:"
+                    echo ""
+                    _help
+                    exit
+                fi
+            fi
+
+            # Parse for random
+            if [ $pokemon = 'random' ]; then
+                echo $pokemon
+                # Add percentage to be shiny
+                # Delimit gens on comma
+                # Allow to specify range and specifics like yay
+            fi
+
+            # Parse for female
+            # TODO
+            # small sprites only has select females
+
+            # curl images
+            if [ $use_small ]; then
+                curl -sL \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$pokemon.png" \
+                    -o "$pokemon_desc.png"
+
+                pokemon_image="$pokemon_desc.png"
+            elif [ $use_ani ]; then
+                curl -sL \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon.gif" \
+                    -o "$pokemon_desc.gif"
+                pokemon_image="$pokemon_desc.png"
+            else
+                curl -sL \
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$pokemon.png" \
+                    -o "$pokemon_desc.png"
+                pokemon_image="$pokemon_desc.png"
+            fi
+
+            pokemon_images+=(${pokemon_image})
+        done
+        ;;
+esac
+
+# Stitch pokemon images and display
+if [ $use_ani == 0 ]; then
+    for _i in "${pokemon_images[@]}"; do
+
+        # Normalize images (have same bottom) by default images are centered
+        convert "$_i" -trim "$_i"
+
+        # Flip to level the base of each image
+        convert -flip "$_i" "$_i"
+    done
+
+    # Stitch them with transparent background
+    convert -background 'rgba(0, 0, 0, 0)' "${pokemon_images[@]}" +append t.png
+
+    # Flip image back
+    convert -flip t.png t.png
+
+    timg --upscale t.png
+
+    # cleanup
+    for _i in "${pokemon_images[@]}"; do
+        rm -f "$_i"
+    done
+    rm -f t.png
+else
+    echo "ani!"
+fi
