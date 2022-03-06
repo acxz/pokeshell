@@ -16,21 +16,21 @@ _help() {
         "-h, --help" "Print this help." \
 
     echo ""
-    echo "Shiny: prepend \"s{hiny}::\" to POKEMON"
+    echo "Shiny: prepend \"s{hiny}:\" to POKEMON"
     echo "default: use shiny ratio of 1/8192"
 
     echo ""
 
-    echo "Sex: append \"+m{ale}/f{emale}\" to POKEMON"
+    echo "Sex: append \"+m{ale}/+f{emale}\" to POKEMON"
     echo "default: use sex ratio of pokemon"
     echo ""
 
     echo "Examples: pts pikachu"
-    echo "          pts s:meowstic+female"
+    echo "          pts s:nidoran-f+f nidoran-m"
     echo "          pts -s s:bulbasaur+m ns:pikachu+f venusaur"
     echo "          pts -b charizard-mega-x+male s:ho-oh moltres-galar"
     echo "          pts -a shiny:squirtle s:charmander"
-    echo "          pts type-null farfetchd sirfetcd"
+    echo "          pts type-null farfetchd sirfetchd"
 }
 
 
@@ -39,6 +39,7 @@ case "$#" in
     0)
         # display help if no arguments are given
         _help
+        exit
         ;;
     *)
         use_small=0
@@ -71,6 +72,7 @@ case "$#" in
 
         # Parse pokemon
         pokemon_images=()
+        _loop_num=0
         for pokemon_desc in "${@:$pokemon_start_idx}"; do
 
             # Parse for random
@@ -122,7 +124,12 @@ case "$#" in
                 sex_str=${pokemon_desc_arr[1]}
             fi
 
-            echo $pokemon
+            # meowstic is weird in pokeapi (upstream issue?)
+            # male shiny is actually female shiny?
+            if [ $pokemon == 'meowstic' ]; then
+                pokemon=meowstic-male
+            fi
+
             # TODO may need to change end point with how forms work for pokeapi
             # Check if pokemon exists! If not use unown-? lol
             http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
@@ -133,19 +140,26 @@ case "$#" in
                     "https://pokeapi.co/api/v2/pokemon-form/$pokemon")
                 if [ $http_code == '404' ]; then
                     # Okay now it probably doesn't exist
+                    echo "$pokemon is unknown?"
                     pokemon='unown-question'
+                    pokemon='unown'
                 fi
             fi
-            echo $pokemon
 
             pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon | \
                 jq -r '.species.name')
-            echo ${pokemon_species}
 
             # Ensure proper sex is used (if a pokemon cannot be male or cannot
             # be female that is enforced)
             sex_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
                 jq -r '.gender_rate')
+
+            # meowstic is weird in pokeapi (upstream issue?)
+            # convert meowstic-male back to meowstic for the other backends
+            if [ $pokemon == 'meowstic-male' ]; then
+                pokemon=meowstic
+                sex_rate=4
+            fi
 
             if [ -z "$sex_str" ]; then
 
@@ -164,16 +178,24 @@ case "$#" in
             fi
 
             if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
-                if [ $sex_rate = -1 ] || [ $sex_rate = 8 ]; then
-                    echo "$pokemon_species cannot be male!"
+                if [ $sex_rate = 8 ]; then
+                    echo "$pokemon must be female!"
+                    echo ""
+                    exit
+                elif [ $sex_rate = -1 ]; then
+                    echo "$pokemon has no sex!"
                     echo ""
                     exit
                 else
                     sex=male
                 fi
             elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
-                if [ $sex_rate = -1 ] || [ $sex_rate = 0 ]; then
-                    echo "$pokemon_species cannot be female!"
+                if [ $sex_rate = 0 ]; then
+                    echo "$pokemon must be male!"
+                    echo ""
+                    exit
+                elif [ $sex_rate = -1 ]; then
+                    echo "$pokemon has no sex!"
                     echo ""
                     exit
                 else
@@ -197,7 +219,6 @@ case "$#" in
 
             # curl images
             if [ $use_small == 1 ]; then
-
                 # default type of small sprites is "regular"
                 if [ $_type = 'not-shiny' ]; then
                     _type=regular
@@ -206,7 +227,11 @@ case "$#" in
                     sex=''
                 fi
 
-                # For small sprites only limited number is exclusively female,
+                if [ $pokemon = 'nidoran-f' ]; then
+                    sex=''
+                fi
+
+                # Only limited number is exclusively female,
                 # thus need to do a check to see if female exists
                 # if not revert to male (i.e. sex='')
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
@@ -215,18 +240,36 @@ case "$#" in
                     sex=''
                 fi
 
+                pokemon_image="$pokemon_desc.png"
+                pokemon_image=$_loop_num$pokemon_image
                 curl -sL \
                     "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png" \
-                    -o "$pokemon_desc.png"
-                pokemon_image="$pokemon_desc.png"
-
+                    -o "$pokemon_image"
             elif [ $use_ani == 1 ]; then
                 # default type of ani sprites is "normal"
                 if [ $_type = 'not-shiny' ]; then
                     _type=normal
                 fi
 
+                if [ $sex = 'female' ] && [ $pokemon != 'nidoran-f' ]; then
+                    sex='-f'
+                else
+                    sex=''
+                fi
+
+                # Only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # if not revert to male (i.e. sex='')
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$sex.gif")
+                if [ $http_code == '404' ]; then
+                    sex=''
+                fi
+
                 # ani sprites unique naming
+                # nidoran_f/m
+                pokemon=${pokemon/nidoran-f/nidoran_f}
+                pokemon=${pokemon/nidoran-m/nidoran_m}
                 # search and replace mega-{x/y} to just mega{x/y}
                 pokemon=${pokemon/mega-/mega}
                 # search and replace type-null to just typenull
@@ -234,11 +277,11 @@ case "$#" in
 
                 # TODO: for gen 8 prepend "swsh-" to $_type
 
-                curl -sL \
-                    "https://projectpokemon.org/images/$_type-sprite/$pokemon.gif" \
-                    -o "$pokemon_desc.gif"
                 pokemon_image="$pokemon_desc.gif"
-
+                pokemon_image=$_loop_num$pokemon_image
+                curl -sL \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$sex.gif" \
+                    -o "$pokemon_image"
             else
                 # default type of big sprites is "default"
                 if [ $_type = 'not-shiny' ] && [ $sex != 'female' ]; then
@@ -253,23 +296,32 @@ case "$#" in
                     _fallback=shiny
                 fi
 
+                # meowstic is weird in pokeapi (upstream issue?)
+                # male shiny is actually female shiny?
+                if [ $pokemon == 'meowstic' ]; then
+                    pokemon=meowstic-male
+                fi
+
                 json_field=".sprites.front_${_desc}"
                 url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
                     jq -r $json_field)
 
-                # For big sprites only limited number is exclusively female,
+                # Only limited number is exclusively female,
                 # thus need to do a check to see if female exists
-                # Use fallback (male) if female does not exist
+                # if not revert to male (i.e. sex='')
+                # note for female only pokemon, pokeapi uses male classifier
                 if [ $url == 'null' ]; then
                     _desc=$_fallback
                     json_field=".sprites.front_${_desc}"
                     url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
                         jq -r $json_field)
                 fi
-                curl -sL $url -o "$pokemon_desc.png"
                 pokemon_image="$pokemon_desc.png"
+                pokemon_image=$_loop_num$pokemon_image
+                curl -sL $url -o "$pokemon_image"
             fi
             pokemon_images+=(${pokemon_image})
+            _loop_num=$((_loop_num+1))
         done
         ;;
 esac
