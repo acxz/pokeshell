@@ -23,6 +23,15 @@ _help() {
 
     echo "Sex: append \"+m(ale)/+f(emale)\" to POKEMON"
     echo "default: use sex ratio of pokemon"
+
+    echo ""
+
+    echo "Random: use \"random{-1,2,4}\" for POKEMON"
+    echo "specify which gens to pull from with a comma separated list"
+    echo "TODO"
+    echo "random-1,2,3"
+    echo "note: specifying a sex for random is a suggestion as"
+    echo "random pokemon may have sex restrictions"
     echo ""
 
     echo "Examples: pts pikachu"
@@ -75,15 +84,6 @@ case "$#" in
         _loop_num=0
         for pokemon_desc in "${@:$pokemon_start_idx}"; do
 
-            # TODO for random
-            # Parse for random
-            if [ "$pokemon" = 'random' ]; then
-                echo $pokemon
-                # Add percentage to be shiny
-                # Delimit gens on comma
-                # Allow to specify range and specifics like yay
-            fi
-
             # Parse for shiny
             IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
@@ -92,6 +92,16 @@ case "$#" in
             else
                 shiny_str=${pokemon_desc_arr[0]}
                 pokemon=${pokemon_desc_arr[1]}
+            fi
+
+            # Parse for sex
+            IFS='+' read -ra pokemon_desc_arr <<< "$pokemon"
+            if [ ${#pokemon_desc_arr[@]} == 1 ]; then
+                pokemon=${pokemon_desc_arr[0]}
+                sex_str=''
+            else
+                pokemon=${pokemon_desc_arr[0]}
+                sex_str=${pokemon_desc_arr[1]}
             fi
 
             if [ -z "$shiny_str" ]; then
@@ -115,14 +125,19 @@ case "$#" in
                 exit
             fi
 
-            # Parse for sex
-            IFS='+' read -ra pokemon_desc_arr <<< "$pokemon"
-            if [ ${#pokemon_desc_arr[@]} == 1 ]; then
-                pokemon=${pokemon_desc_arr[0]}
-                sex_str=''
-            else
-                pokemon=${pokemon_desc_arr[0]}
-                sex_str=${pokemon_desc_arr[1]}
+            # TODO
+            # Delimit gens on comma
+            # Allow to specify range and specifics like yay
+            # Parse for random
+            is_random=0
+            if [ "$pokemon" = 'random' ]; then
+                is_random=1
+                total_num=898
+
+                # Choose random pokemon id
+                pokemon_id=$(shuf -i 1-"$total_num" -n 1)
+                pokemon=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon_id | \
+                    jq -r '.species.name')
             fi
 
             # meowstic is weird in pokeapi (upstream issue?)
@@ -178,27 +193,45 @@ case "$#" in
                 fi
             fi
 
+
             if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
                 if [ $sex_rate = 8 ]; then
-                    echo "$pokemon must be female!"
-                    echo ""
-                    exit
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon must be female!"
+                        echo ""
+                        exit
+                    else
+                        sex=female
+                    fi
                 elif [ $sex_rate = -1 ]; then
-                    echo "$pokemon has no sex!"
-                    echo ""
-                    exit
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon has no sex!"
+                        echo ""
+                        exit
+                    else
+                        sex=male
+                    fi
                 else
                     sex=male
                 fi
             elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
                 if [ $sex_rate = 0 ]; then
-                    echo "$pokemon must be male!"
-                    echo ""
-                    exit
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon must be male!"
+                        echo ""
+                        exit
+                    else
+                        sex=male
+                    fi
                 elif [ $sex_rate = -1 ]; then
-                    echo "$pokemon has no sex!"
-                    echo ""
-                    exit
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon has no sex!"
+                        echo ""
+                        exit
+                    else
+                        # use default sex of male
+                        sex=male
+                    fi
                 else
                     sex=female
                 fi
