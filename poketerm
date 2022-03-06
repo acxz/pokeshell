@@ -16,13 +16,13 @@ _help() {
         "-h, --help" "Print this help." \
 
     echo ""
-    echo "Shiny: prepend \"s{hiny}:\" to POKEMON"
-    echo "TODO: default? shiny chance?"
+    echo "Shiny: prepend \"s{hiny}::\" to POKEMON"
+    echo "default: use shiny ratio of 1/8192"
 
     echo ""
 
     echo "Sex: append \"+m{ale}/f{emale}\" to POKEMON"
-    echo "TODO: default? 50/50?"
+    echo "default: use sex ratio of pokemon"
     echo ""
 
     echo "Examples: pts pikachu"
@@ -30,6 +30,7 @@ _help() {
     echo "          pts -s s:bulbasaur+m ns:pikachu+f venusaur"
     echo "          pts -b charizard-mega-x+male s:ho-oh moltres-galar"
     echo "          pts -a shiny:squirtle s:charmander"
+    echo "          pts type-null farfetchd sirfetcd"
 }
 
 
@@ -71,6 +72,15 @@ case "$#" in
         # Parse pokemon
         pokemon_images=()
         for pokemon_desc in "${@:$pokemon_start_idx}"; do
+
+            # Parse for random
+            if [ "$pokemon" = 'random' ]; then
+                echo $pokemon
+                # Add percentage to be shiny
+                # Delimit gens on comma
+                # Allow to specify range and specifics like yay
+            fi
+
             # Parse for shiny
             IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
@@ -82,8 +92,13 @@ case "$#" in
             fi
 
             if [ -z "$shiny_str" ]; then
+                # Random shiny chance
                 shiny_str='not-shiny'
-                # TODO: shiny chance random it
+                shiny_rate=8192
+                shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
+                if [ $shiny_chance = $shiny_rate ]; then
+                    shiny_str='shiny'
+                fi
             fi
 
             if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
@@ -107,28 +122,77 @@ case "$#" in
                 sex_str=${pokemon_desc_arr[1]}
             fi
 
+            echo $pokemon
+            # TODO may need to change end point with how forms work for pokeapi
+            # Check if pokemon exists! If not use unown-? lol
+            http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                "https://pokeapi.co/api/v2/pokemon/$pokemon")
+            if [ $http_code == '404' ]; then
+                # Could be a pokemon form
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://pokeapi.co/api/v2/pokemon-form/$pokemon")
+                if [ $http_code == '404' ]; then
+                    # Okay now it probably doesn't exist
+                    pokemon='unown-question'
+                fi
+            fi
+            echo $pokemon
+
+            pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon | \
+                jq -r '.species.name')
+            echo ${pokemon_species}
+
+            # Ensure proper sex is used (if a pokemon cannot be male or cannot
+            # be female that is enforced)
+            sex_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
+                jq -r '.gender_rate')
+
             if [ -z "$sex_str" ]; then
-                sex_str='male'
-                # TODO: use the pokemon's gender ratio random it
+
+                # Random sex chance based on pokemon sex ratio
+                if [ "$sex_rate" = '-1' ]; then
+                    sex_str='sexless'
+                else
+                    sex_div=8
+                    sex_chance=$(shuf -i 1-"$sex_div" -n 1)
+                    if [ $sex_chance -le $sex_rate ]; then
+                        sex_str='female'
+                    else
+                        sex_str='male'
+                    fi
+                fi
             fi
 
             if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
-                sex=male
+                if [ $sex_rate = -1 ] || [ $sex_rate = 8 ]; then
+                    echo "$pokemon_species cannot be male!"
+                    echo ""
+                    exit
+                else
+                    sex=male
+                fi
             elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
-                sex=female
+                if [ $sex_rate = -1 ] || [ $sex_rate = 0 ]; then
+                    echo "$pokemon_species cannot be female!"
+                    echo ""
+                    exit
+                else
+                    sex=female
+                fi
+            elif [ $sex_str = 'sexless' ]; then
+                if [ $sex_rate != -1 ]; then
+                    echo "$pokemon_species cannot be sexless!"
+                    echo ""
+                    exit
+                else
+                    # use default sex of male
+                    sex=male
+                fi
             else
                 echo "Incorrect sex specifier! See help:"
                 echo ""
                 _help
                 exit
-            fi
-
-            # Parse for random
-            if [ $pokemon = 'random' ]; then
-                echo $pokemon
-                # Add percentage to be shiny
-                # Delimit gens on comma
-                # Allow to specify range and specifics like yay
             fi
 
             # curl images
@@ -162,9 +226,11 @@ case "$#" in
                     _type=normal
                 fi
 
-                # search and replace mega-{x/y} to just mega{x/y} for ani
-                # sprites
+                # ani sprites unique naming
+                # search and replace mega-{x/y} to just mega{x/y}
                 pokemon=${pokemon/mega-/mega}
+                # search and replace type-null to just typenull
+                pokemon=${pokemon/type-null/typenull}
 
                 # TODO: for gen 8 prepend "swsh-" to $_type
 
