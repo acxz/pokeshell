@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 
-# Default values
-use_small=0
-use_big=1
-use_ani=0
-
-#Function that prints out the help text
-# TODO
+# Function that prints out the help text
 # formatting for the help strings
 fmt_help="  %-20s\t%-54s\n"
 _help() {
@@ -31,9 +25,10 @@ _help() {
     echo "TODO: default? 50/50?"
     echo ""
 
-    echo "Examples: pts pikachu+f"
-    echo "          pts -s s:bulbasaur+m"
-    echo "          pts -b charizard+male s:ho-oh moltres"
+    echo "Examples: pts pikachu"
+    echo "          pts s:meowstic+female"
+    echo "          pts -s s:bulbasaur+m ns:pikachu+f venusaur"
+    echo "          pts -b charizard-mega-x+male s:ho-oh moltres"
     echo "          pts -a shiny:squirtle"
 }
 
@@ -44,39 +39,43 @@ case "$#" in
         # display help if no arguments are given
         _help
         ;;
-    1)
-        # Check flag
-        case $1 in
-            -b | --big | big | -a | --animation | -s | --small)
-                echo "You forgot to mention any Pokemon! See help:"
-                echo ""
-                _help
-                ;;
-            -h | --help | help)
-                _help
-                ;;
-            *)
-                echo "Incorrect option! See help:"
-                echo ""
-                _help
-                ;;
-        esac
-        ;;
-
     *)
+        use_small=0
+        use_ani=0
+        pokemon_start_idx=1
+        flagged=0
+
         if [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
             use_small=1
+            pokemon_start_idx=2
+            flagged=1
         elif [ "$1" == '-a' ] || [ "$1" == '--animation' ]; then
             use_ani=1
+            pokemon_start_idx=2
+            flagged=1
+        elif [ "$1" == '-b' ] || [ "$1" == '--big' ]; then
+            pokemon_start_idx=2
+            flagged=1
+        elif [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+            _help
+            exit
+        fi
+
+        if [ $# == 1 ] && [ $flagged == 1 ]; then
+            echo "You forgot to mention any Pokemon! See help:"
+            echo ""
+            _help
+            exit
         fi
 
         # Parse pokemon
         pokemon_images=()
-        for pokemon_desc in "${@:2}"; do
+        for pokemon_desc in "${@:$pokemon_start_idx}"; do
             # Parse for shiny
             IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
                 pokemon=${pokemon_desc_arr[0]}
+                shiny_str=''
             else
                 shiny_str=${pokemon_desc_arr[0]}
                 pokemon=${pokemon_desc_arr[1]}
@@ -90,7 +89,7 @@ case "$#" in
             if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
                 _type=shiny
             elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
-                _type=regular
+                _type=not-shiny
             else
                 echo "Incorrect shiny specifier! See help:"
                 echo ""
@@ -102,6 +101,7 @@ case "$#" in
             IFS='+' read -ra pokemon_desc_arr <<< "$pokemon"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
                 pokemon=${pokemon_desc_arr[0]}
+                sex_str=''
             else
                 pokemon=${pokemon_desc_arr[0]}
                 sex_str=${pokemon_desc_arr[1]}
@@ -113,7 +113,7 @@ case "$#" in
             fi
 
             if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
-                sex=''
+                sex=male
             elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
                 sex=female
             else
@@ -132,7 +132,16 @@ case "$#" in
             fi
 
             # curl images
-            if [ $use_small ]; then
+            if [ $use_small == 1 ]; then
+
+                # default type of small sprites is "regular"
+                if [ $_type = 'not-shiny' ]; then
+                    _type=regular
+                fi
+                if [ $sex = 'male' ]; then
+                    sex=''
+                fi
+
                 # For small sprites only limited number is exclusively female,
                 # thus need to do a check to see if female exists
                 # if not revert to male (i.e. sex='')
@@ -146,19 +155,43 @@ case "$#" in
                     "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png" \
                     -o "$pokemon_desc.png"
 
-                pokemon_image="$pokemon_desc.png"
-            elif [ $use_ani ]; then
+            elif [ $use_ani == 1 ]; then
                 curl -sL \
                     "https://projectpokemon.org/images/$_type-sprite/$pokemon.gif" \
                     -o "$pokemon_desc.gif"
-                pokemon_image="$pokemon_desc.png"
             else
-                curl -sL \
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$pokemon.png" \
-                    -o "$pokemon_desc.png"
-                pokemon_image="$pokemon_desc.png"
+                # default type of big sprites is "default"
+                if [ $_type = 'not-shiny' ] && [ $sex != 'female' ]; then
+                    _desc=default
+                elif [ $_type = 'not-shiny' ] && [ $sex == 'female' ]; then
+                    _desc=female
+                    _fallback=default
+                elif [ $_type = 'shiny' ] && [ $sex != 'female' ]; then
+                    _desc=shiny
+                else
+                    _desc=shiny_female
+                    _fallback=shiny
+                fi
+
+                json_field=".sprites.front_${_desc}"
+                url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
+                    jq -r $json_field)
+
+                # For big sprites only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # Use fallback (male) if female does not exist
+                if [ $url == 'null' ]; then
+                    _desc=$_fallback
+                    json_field=".sprites.front_${_desc}"
+                    url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
+                        jq -r $json_field)
+                fi
+
+                curl -sL $url -o "$pokemon_desc.png"
+
             fi
 
+            pokemon_image="$pokemon_desc.png"
             pokemon_images+=(${pokemon_image})
         done
         ;;
