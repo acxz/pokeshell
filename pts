@@ -16,12 +16,12 @@ _help() {
         "-h, --help" "Print this help." \
 
     echo ""
-    echo "Shiny: prepend \"s{hiny}:\" to POKEMON"
+    echo "Shiny: prepend \"s(hiny):\" to POKEMON"
     echo "default: use shiny ratio of 1/8192"
 
     echo ""
 
-    echo "Sex: append \"+m{ale}/+f{emale}\" to POKEMON"
+    echo "Sex: append \"+m(ale)/+f(emale)\" to POKEMON"
     echo "default: use sex ratio of pokemon"
     echo ""
 
@@ -29,7 +29,7 @@ _help() {
     echo "          pts s:nidoran-f+f nidoran-m"
     echo "          pts -s s:bulbasaur+m ns:pikachu+f venusaur"
     echo "          pts -b charizard-mega-x+male s:ho-oh moltres-galar"
-    echo "          pts -a shiny:squirtle s:charmander"
+    echo "          pts -a shiny:squirtle s:pikachu-gmax"
     echo "          pts type-null farfetchd sirfetchd"
 }
 
@@ -75,6 +75,7 @@ case "$#" in
         _loop_num=0
         for pokemon_desc in "${@:$pokemon_start_idx}"; do
 
+            # TODO for random
             # Parse for random
             if [ "$pokemon" = 'random' ]; then
                 echo $pokemon
@@ -266,16 +267,16 @@ case "$#" in
                     sex=''
                 fi
 
-                # ani sprites unique naming
-                # nidoran_f/m
+                # ani sprites unique naming search and replace
+                # nidoran-f/m => nidoran_f/m
                 pokemon=${pokemon/nidoran-f/nidoran_f}
                 pokemon=${pokemon/nidoran-m/nidoran_m}
-                # search and replace mega-{x/y} to just mega{x/y}
-                pokemon=${pokemon/mega-/mega}
-                # search and replace type-null to just typenull
+                # type-null => typenull
                 pokemon=${pokemon/type-null/typenull}
-
-                # TODO: for gen 8 prepend "swsh-" to $_type
+                # mega-{x/y} => mega{x/y}
+                pokemon=${pokemon/mega-/mega}
+                # gmax => gigantamax
+                pokemon=${pokemon/gmax/gigantamax}
 
                 pokemon_image="$pokemon_desc.gif"
                 pokemon_image=$_loop_num$pokemon_image
