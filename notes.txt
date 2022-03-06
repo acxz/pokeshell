@@ -1,30 +1,18 @@
 # poketerm maybe pokeshell? pts for now
-there are more poketerm projects than pokeshell
+there are more poketerm projects than pokeshell projects
 
 Need frontend
 - random
-    with specific gens and small chance of shiny and bit more chance of variants
+    with specific gens
     use random like a placeholder and expand later
-    i.e. pts random -> pts pikachu or pts shiny-pikachu if lucky
     delimit on comma for random gen (how to do range) [1-6]
     `random-1,6`
-    can also force random shinies,
-    `shiny:random-1,6`
-    can't specify random forms tho, maybe u can idk?
-    maybe `shiny-random-1,6-mega` or `random-1,6-alolan`
 - add autocomplete for flags
 - add autocomplete for pokemon
-- for 404 use question mark unknown (when exactly: no poke found, no female
-  version/male version found)
-- handle gender differences properly specifically genderless pokemon
-    specifying male or female should give error (at the very least female should
-    give error) if there is no female version then there is also no male version
-    right? so can use that to flag incorrect male versions
-- use gender ratios specific species
-- handle farfetch'd, sirfetch'd, type: null
+- for 404 use question mark unknown (when exactly: no poke (mispelling) found,
+no female version/male version found)
 
 other cool stuff:
-    use random male/female unless specified
     use random unown (instead of default) if not specified unown-a/b etc
     # gen 6 loved their forms
     use random vivillon
@@ -47,6 +35,7 @@ other cool stuff:
 gotta wait for new gifs from projectpokemon to be part of pokeapi, till then
 use different source for gif (projectpokemon) and another one for img (pokeapi)
 also gotta wait for shiny sprites to be part of pokeapi from msikma/pokesprite
+pokeapi has messed up entry for meowstic
 
 get upstream issues to track them
 
@@ -64,5 +53,3 @@ https://github.com/tobiasbueschel/awesome-pokemon
 crosspost on /r/pokemon, /r/unixporn, /r/linux
 
 Add option to use cache and save downloaded images locally
-
-Make sure all pokemon is with special e
