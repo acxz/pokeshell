@@ -23,11 +23,17 @@ _help() {
 
     echo ""
     echo "Shiny: prepend \"s{hiny}:\" to POKEMON"
+    echo "TODO: default? shiny chance?"
+
     echo ""
 
-    echo "Examples: pts pikachu"
-    echo "          pts -s s:bulbasaur"
-    echo "          pts -b charizard s:ho-oh moltres"
+    echo "Sex: append \"+m{ale}/f{emale}\" to POKEMON"
+    echo "TODO: default? 50/50?"
+    echo ""
+
+    echo "Examples: pts pikachu+f"
+    echo "          pts -s s:bulbasaur+m"
+    echo "          pts -b charizard+male s:ho-oh moltres"
     echo "          pts -a shiny:squirtle"
 }
 
@@ -68,25 +74,53 @@ case "$#" in
         pokemon_images=()
         for pokemon_desc in "${@:2}"; do
             # Parse for shiny
-            _type=regular
             IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
                 pokemon=${pokemon_desc_arr[0]}
             else
                 shiny_str=${pokemon_desc_arr[0]}
                 pokemon=${pokemon_desc_arr[1]}
-                if [ -z "$shiny_str" ]; then
-                    shiny_str='not_shiny'
-                fi
+            fi
 
-                if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
-                    _type=shiny
-                else
-                    echo "Incorrect shiny specifier! See help:"
-                    echo ""
-                    _help
-                    exit
-                fi
+            if [ -z "$shiny_str" ]; then
+                shiny_str='not-shiny'
+                # TODO: shiny chance random it
+            fi
+
+            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
+                _type=shiny
+            elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
+                _type=regular
+            else
+                echo "Incorrect shiny specifier! See help:"
+                echo ""
+                _help
+                exit
+            fi
+
+            # Parse for sex
+            IFS='+' read -ra pokemon_desc_arr <<< "$pokemon"
+            if [ ${#pokemon_desc_arr[@]} == 1 ]; then
+                pokemon=${pokemon_desc_arr[0]}
+            else
+                pokemon=${pokemon_desc_arr[0]}
+                sex_str=${pokemon_desc_arr[1]}
+            fi
+
+            if [ -z "$sex_str" ]; then
+                sex_str='male'
+                # TODO: fifty fifty random it male/female
+            fi
+
+            if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
+                sex=''
+            elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
+                sex=female
+            else
+                echo "Incorrect sex specifier! See help:"
+                echo ""
+                _help
+                exit
             fi
 
             # Parse for random
@@ -97,14 +131,19 @@ case "$#" in
                 # Allow to specify range and specifics like yay
             fi
 
-            # Parse for female
-            # TODO
-            # small sprites only has select females
-
             # curl images
             if [ $use_small ]; then
+                # For small sprites only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # if not revert to male (i.e. sex='')
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png")
+                if [ $http_code == '404' ]; then
+                    sex=''
+                fi
+
                 curl -sL \
-                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$pokemon.png" \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png" \
                     -o "$pokemon_desc.png"
 
                 pokemon_image="$pokemon_desc.png"
