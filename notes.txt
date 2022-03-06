@@ -2,13 +2,6 @@
 there are more poketerm projects than pokeshell
 
 Need frontend
-- dex num and name
-    with variants specify name with variants modifier i.e. pikachu-megax
-    with variants specify dex num with variants modifier
-    i.e. 25-megax == pikachu-megax
-    note keep variants modifier as text since nums are hard
-    this might be a bit more dependent on the url of how we are fetching img tho
-    match pokeapi url?
 - random
     with specific gens and small chance of shiny and bit more chance of variants
     use random like a placeholder and expand later
@@ -16,14 +9,16 @@ Need frontend
     delimit on comma for random gen (how to do range) [1-6]
     `random-1,6`
     can also force random shinies,
-    `shiny-random-1,6`
+    `shiny:random-1,6`
     can't specify random forms tho, maybe u can idk?
     maybe `shiny-random-1,6-mega` or `random-1,6-alolan`
 - add autocomplete for flags
 - add autocomplete for pokemon
 - for 404 use question mark unknown
-
-of course this is a list (keep on adding to display more pokes!)
+- handle gender differences properly specifically genderless pokemon
+    specifying male or female should give error (at the very least female should
+    give error) if there is no female version then there is also no male version
+    right? so can use that to flag incorrect male versions
 
 other cool stuff:
     use random male/female unless specified
