@@ -14,11 +14,14 @@ Need frontend
     maybe `shiny-random-1,6-mega` or `random-1,6-alolan`
 - add autocomplete for flags
 - add autocomplete for pokemon
-- for 404 use question mark unknown
+- for 404 use question mark unknown (when exactly: no poke found, no female
+  version/male version found)
 - handle gender differences properly specifically genderless pokemon
     specifying male or female should give error (at the very least female should
     give error) if there is no female version then there is also no male version
     right? so can use that to flag incorrect male versions
+- use gender ratios specific species
+- handle farfetch'd, sirfetch'd, type: null
 
 other cool stuff:
     use random male/female unless specified
