@@ -4,7 +4,7 @@ if [[ -n "$ZSH_VERSION" ]]; then
     autoload -U +X bashcompinit && bashcompinit
 fi
 
-_pokeshell_completions() {
+_pokeshell() {
     curr_arg=${COMP_WORDS[${COMP_CWORD}]}
     curr_arg=${curr_arg/ns:/}
     curr_arg=${curr_arg/s:/}
@@ -14,7 +14,7 @@ _pokeshell_completions() {
     COMPREPLY=($(compgen -W "$pokemon_list" "${curr_arg}"))
 }
 
-IFS=$'\n' complete -F _pokeshell_completions pokeshell
+IFS=$'\n' complete -F _pokeshell pokeshell
 
 pokemon_list='
 random
