@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 # Function that prints out the help text
-# formatting for the help strings
-fmt_help="  %-20s\t%-54s\n"
 _help() {
     echo "pokeshell: Show Pokemon sprites in the terminal"
     # TODO: Show a little pokeball ascii here
@@ -10,7 +8,7 @@ _help() {
 
     echo ""
     echo "Usage: pokeshell [OPTION] POKEMON..."
-    printf "${fmt_help}" \
+    printf "  %-20s\t%-54s\n" \
         "-b, --big" "Display big sprites (default)" \
         "-a, --animation" "Display animated sprites" \
         "-s, --small" "Display small sprites" \
@@ -107,7 +105,7 @@ case "$#" in
                 shiny_str='not-shiny'
                 shiny_rate=8192
                 shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
-                if [ $shiny_chance = $shiny_rate ]; then
+                if [ "$shiny_chance" = "$shiny_rate" ]; then
                     shiny_str='shiny'
                 fi
             fi
@@ -134,7 +132,8 @@ case "$#" in
 
                 # Choose random pokemon id
                 pokemon_id=$(shuf -i 1-"$total_num" -n 1)
-                pokemon=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon_id | \
+                pokemon=$(curl -s \
+                    "https://pokeapi.co/api/v2/pokemon/$pokemon_id" | \
                     jq -r '.species.name')
 
                 # if random pokemon_species has no entry but its form has entry
@@ -145,7 +144,7 @@ case "$#" in
 
             # meowstic is weird in pokeapi (upstream issue?)
             # male shiny is actually female shiny?
-            if [ $pokemon == 'meowstic' ]; then
+            if [ "$pokemon" == 'meowstic' ]; then
                 pokemon=meowstic-male
             fi
 
@@ -153,11 +152,11 @@ case "$#" in
             # Check if pokemon exists! If not use unown-? lol
             http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
                 "https://pokeapi.co/api/v2/pokemon/$pokemon")
-            if [ $http_code == '404' ]; then
+            if [ "$http_code" == '404' ]; then
                 # Could be a pokemon form
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
                     "https://pokeapi.co/api/v2/pokemon-form/$pokemon")
-                if [ $http_code == '404' ]; then
+                if [ "$http_code" == '404' ]; then
                     # Okay now it probably doesn't exist
                     echo "$pokemon is unknown?"
                     pokemon='unown-question'
@@ -188,7 +187,7 @@ case "$#" in
                 else
                     gender_div=8
                     gender_chance=$(shuf -i 1-"$gender_div" -n 1)
-                    if [ $gender_chance -le $gender_rate ]; then
+                    if [[ $gender_chance -le $gender_rate ]]; then
                         gender_str='female'
                     else
                         gender_str='male'
@@ -273,7 +272,7 @@ case "$#" in
                 # if not revert to male (i.e. gender='')
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
                     "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png")
-                if [ $http_code == '404' ]; then
+                if [ "$http_code" == '404' ]; then
                     gender=''
                 fi
 
@@ -288,7 +287,7 @@ case "$#" in
                     _type=normal
                 fi
 
-                if [ $gender = 'female' ] && [ $pokemon != 'nidoran-f' ]; then
+                if [ "$gender" = 'female' ] && [ "$pokemon" != 'nidoran-f' ]; then
                     gender='-f'
                 else
                     gender=''
@@ -299,7 +298,7 @@ case "$#" in
                 # if not revert to male (i.e. gender='')
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
                     "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif")
-                if [ $http_code == '404' ]; then
+                if [ "$http_code" == '404' ]; then
                     gender=''
                 fi
 
@@ -321,12 +320,12 @@ case "$#" in
                     -o "$pokemon_image"
             else
                 # default type of big sprites is "default"
-                if [ $_type = 'not-shiny' ] && [ $gender != 'female' ]; then
+                if [ "$_type" = 'not-shiny' ] && [ "$gender" != 'female' ]; then
                     _desc=default
-                elif [ $_type = 'not-shiny' ] && [ $gender == 'female' ]; then
+                elif [ "$_type" = 'not-shiny' ] && [ "$gender" == 'female' ]; then
                     _desc=female
                     _fallback=default
-                elif [ $_type = 'shiny' ] && [ $gender != 'female' ]; then
+                elif [ "$_type" = 'shiny' ] && [ "$gender" != 'female' ]; then
                     _desc=shiny
                 else
                     _desc=shiny_female
@@ -347,7 +346,7 @@ case "$#" in
                 # thus need to do a check to see if female exists
                 # if not revert to male (i.e. gender='')
                 # note for female only pokemon, pokeapi uses male classifier
-                if [ $url == 'null' ]; then
+                if [ "$url" == 'null' ]; then
                     _desc=$_fallback
                     json_field=".sprites.front_${_desc}"
                     url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
@@ -355,9 +354,9 @@ case "$#" in
                 fi
                 pokemon_image="$pokemon_desc.png"
                 pokemon_image=$_loop_num$pokemon_image
-                curl -sL $url -o "$pokemon_image"
+                curl -sL "$url" -o "$pokemon_image"
             fi
-            pokemon_images+=(${pokemon_image})
+            pokemon_images+=("${pokemon_image}")
             _loop_num=$((_loop_num+1))
         done
         ;;
