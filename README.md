@@ -5,6 +5,7 @@ Key features include:
 - animated sprites
 - multipe pokemon
 - automatic resizing
+- completions
 
 ## Dependencies
 - [bash](https://www.gnu.org/software/bash/)
@@ -14,7 +15,7 @@ Key features include:
 - [timg](https://github.com/hzeller/timg)
 
 ## Usage
-TODO
+`pts -h`
 
 ## Examples
 TODO
@@ -43,6 +44,8 @@ A great amount of gratitude goes to the following projects, without which
 pts would not be possible. Please star/support these sources!
 
 Small sprites: [msikma/pokesprite](https://github.com/msikma/pokesprite)
+
 Big sprites: [PokeAPI](https://pokeapi.co/)
     Specifically: [PokeAPI/sprites](https://github.com/PokeAPI/sprites)
+
 Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spriteindex_148)
