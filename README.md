@@ -33,19 +33,19 @@ makes pts unique among them.
 
 | **Feature**      | **pts** | **pokeget** | **pokescripts** |
 |:----------------:|:-------:|:-----------:|:---------------:|
-| small            | ✅       | ✅           | ✅               |
-| shiny small      | ✅       | ❌           | ✅               |
-| small forms      | ✅       | ❌           | ❌               |
-| big              | ✅       | ✅           | ❌               |
-| shiny big        | ✅       | ❌           | ❌               |
-| big forms        | ✅       | ✅           | ❌               |
-| animated         | ✅       | ❌           | ❌               |
-| genders          | ✅       | ❌           | ❌               |
-| random           | ✅       | ✅           | ✅               |
-| random gens      | ❌       | ✅           | ✅               |
-| tab completion   | ✅       | ❌           | ❌               |
-| resize           | ✅       | ❌           | ❌               |
-| multiple pokemon | ✅       | ❌           | ❌               |
+| small            | ✔️       | ✔️           | ✔️               |
+| shiny small      | ✔️       | ❌           | ✔️               |
+| small forms      | ✔️       | ❌           | ❌               |
+| big              | ✔️       | ✔️           | ❌               |
+| shiny big        | ✔️       | ❌           | ❌               |
+| big forms        | ✔️       | ✔️           | ❌               |
+| animated         | ✔️       | ❌           | ❌               |
+| genders          | ✔️       | ❌           | ❌               |
+| random           | ✔️       | ✔️           | ✔️               |
+| random gens      | ❌       | ✔️           | ✔️               |
+| tab completion   | ✔️       | ❌           | ❌               |
+| resize           | ✔️       | ❌           | ❌               |
+| multiple pokemon | ✔️       | ❌           | ❌               |
 
 
 ## Other Pokémon Sprite Terminal Projects
