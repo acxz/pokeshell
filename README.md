@@ -2,17 +2,14 @@
 A shell program to show pokemon sprites in the terminal.
 
 Key features include:
-- animated sprites
-- multipe pokemon
-- automatic resizing
-- tab completions
+
+| ✔️ animated sprites | ✔️ multiple pokemon | ✔️ terminal fit | ✔️ tab completions |
+|:-:|:-:|:-:|:-:|
 
 ## Dependencies
-- [bash](https://www.gnu.org/software/bash/)
-- [curl](https://curl.se/)
-- [jq](https://stedolan.github.io/jq/)
-- [imagemagick](https://imagemagick.org/)
-- [timg](https://github.com/hzeller/timg)
+
+| - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [timg](https://github.com/hzeller/timg) |
+|:-:|:-:|:-:|:-:|:-:|
 
 ## Usage
 
@@ -22,6 +19,17 @@ pokeshell --help
 
 ## Examples
 TODO
+
+## Sources
+A great amount of gratitude goes to the following projects, without which
+`pokeshell` would not be possible. Please star/support these sources!
+
+Small sprites: [msikma/pokesprite](https://github.com/msikma/pokesprite)
+
+Big sprites: [PokeAPI](https://pokeapi.co/)
+- Specifically: [PokeAPI/pokeapi](https://github.com/PokeAPI/pokeapi) and [PokeAPI/sprites](https://github.com/PokeAPI/sprites)
+
+Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spriteindex_148)
 
 ## Similar Projects
 pokeshell is not the first player in the pokemon shell art niche and nor will it
@@ -44,7 +52,7 @@ makes `pokeshell` unique among them.
 | random           | ✔️       | ✔️           | ✔️               |
 | random gens      | ❌       | ✔️           | ✔️               |
 | tab completion   | ✔️       | ❌           | ❌               |
-| resize           | ✔️       | ❌           | ❌               |
+| terminal fit      | ✔️       | ❌           | ❌               |
 | multiple pokemon | ✔️       | ❌           | ❌               |
 
 
@@ -55,14 +63,3 @@ makes `pokeshell` unique among them.
     Cowsay for Pokemon
 - [31marcobarbosa/pokeTerm](https://github.com/31marcobarbosa/pokeTerm)
     Display random Pokemon sprite upon opening a terminal
-
-## Sources
-A great amount of gratitude goes to the following projects, without which
-`pokeshell` would not be possible. Please star/support these sources!
-
-Small sprites: [msikma/pokesprite](https://github.com/msikma/pokesprite)
-
-Big sprites: [PokeAPI](https://pokeapi.co/)
-- Specifically: [PokeAPI/pokeapi](https://github.com/PokeAPI/pokeapi) and [PokeAPI/sprites](https://github.com/PokeAPI/sprites)
-
-Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spriteindex_148)
