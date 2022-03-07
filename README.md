@@ -1,4 +1,4 @@
-# pts
+# pokeshell
 A shell program to show pokemon sprites in the terminal.
 
 Key features include:
@@ -17,21 +17,21 @@ Key features include:
 ## Usage
 
 ```bash
-pts --help
+pokeshell --help
 ```
 
 ## Examples
 TODO
 
 ## Similar Projects
-pts is not the first player in the pokemon shell art niche and nor will it
+pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
 expand on them.) Below is a feature list of the two projects,
 [phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts) &
 [talwat/pokeget](https://github.com/talwat/pokeget), that also fill this role and what
-makes pts unique among them.
+makes `pokeshell` unique among them.
 
-| **Feature**      | **pts** | **pokeget** | **pokescripts** |
+| **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
 |:----------------:|:-------:|:-----------:|:---------------:|
 | small            | ✔️       | ✔️           | ✔️               |
 | shiny small      | ✔️       | ❌           | ✔️               |
@@ -58,7 +58,7 @@ makes pts unique among them.
 
 ## Sources
 A great amount of gratitude goes to the following projects, without which
-pts would not be possible. Please star/support these sources!
+`pokeshell` would not be possible. Please star/support these sources!
 
 Small sprites: [msikma/pokesprite](https://github.com/msikma/pokesprite)
 

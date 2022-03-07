@@ -5,7 +5,7 @@ if [[ -n "$ZSH_VERSION" ]]; then
     # TODO can't get zsh to work ;(
 fi
 
-_pts_completions() {
+_pokeshell_completions() {
 
     curr_arg=${COMP_WORDS[${COMP_CWORD}]}
     curr_arg=${curr_arg/ns:/}
@@ -18,8 +18,7 @@ _pts_completions() {
 
 }
 
-# change ./pts to pts after install
-IFS=$'\n' complete -F _pts_completions ./pts
+IFS=$'\n' complete -F _pokeshell_completions pokeshell
 
 pokemon_list='
 random

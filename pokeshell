@@ -4,12 +4,12 @@
 # formatting for the help strings
 fmt_help="  %-20s\t%-54s\n"
 _help() {
-    echo "pts: Show Pokemon sprites in the terminal"
+    echo "pokeshell: Show Pokemon sprites in the terminal"
     # TODO: Show a little pokeball ascii here
     # TODO: Simplify # calls to pokeapi (random parse errors with jq?)
 
     echo ""
-    echo "Usage: pts [OPTION] POKEMON..."
+    echo "Usage: pokeshell [OPTION] POKEMON..."
     printf "${fmt_help}" \
         "-b, --big" "Display big sprites (default)" \
         "-a, --animation" "Display animated sprites" \
@@ -32,12 +32,12 @@ _help() {
     echo "random pokemon may have gender restrictions"
     echo ""
 
-    echo "Examples: pts pikachu"
-    echo "          pts s:nidoran-f+f nidoran-m"
-    echo "          pts -s s:bulbasaur+m ns:pikachu+f venusaur"
-    echo "          pts -b charizard-mega-x+male s:ho-oh moltres-galar"
-    echo "          pts -a shiny:squirtle s:pikachu-gmax"
-    echo "          pts type-null farfetchd sirfetchd"
+    echo "Examples: pokeshell pikachu"
+    echo "          pokeshell s:nidoran-f+f nidoran-m"
+    echo "          pokeshell -s s:bulbasaur+m ns:pikachu+f venusaur"
+    echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
+    echo "          pokeshell -a shiny:squirtle s:pikachu-gmax"
+    echo "          pokeshell type-null farfetchd sirfetchd"
 }
 
 

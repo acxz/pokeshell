@@ -1,13 +1,8 @@
-# poketerm maybe pokeshell? pts for now
-there are more poketerm projects than pokeshell projects
-
-Need frontend
 - random
     with specific gens
     delimit on comma for random gen (how to do range) [1-6]
     `random-1,6`
 - add autocomplete for flags
-- add autocomplete for pokemon
 - for 404 use question mark unknown (when exactly: no poke (mispelling) found,
 no female version/male version found)
 
@@ -53,6 +48,4 @@ this list is passed to backend code
 
 Add self to: awesome-pokemon
 https://github.com/tobiasbueschel/awesome-pokemon
-crosspost on /r/pokemon, /r/unixporn, /r/linux
-
-Add option to use cache and save downloaded images locally
+crosspost on /r/pokemon, /r/unixporn, /r/linux, /r/desktops
