@@ -22,14 +22,14 @@ _help() {
 
     echo ""
 
-    echo "Sex: append \"+m(ale)/+f(emale)\" to POKEMON"
-    echo "default: use sex ratio of pokemon"
+    echo "Gender: append \"+m(ale)/+f(emale)\" to POKEMON"
+    echo "default: use gender ratio of pokemon"
 
     echo ""
 
     echo "Random: use \"random\" for POKEMON"
-    echo "note: specifying a sex for random is a suggestion as"
-    echo "random pokemon may have sex restrictions"
+    echo "note: specifying a gender for random is a suggestion as"
+    echo "random pokemon may have gender restrictions"
     echo ""
 
     echo "Examples: pts pikachu"
@@ -92,14 +92,14 @@ case "$#" in
                 pokemon=${pokemon_desc_arr[1]}
             fi
 
-            # Parse for sex
+            # Parse for gender
             IFS='+' read -ra pokemon_desc_arr <<< "$pokemon"
             if [ ${#pokemon_desc_arr[@]} == 1 ]; then
                 pokemon=${pokemon_desc_arr[0]}
-                sex_str=''
+                gender_str=''
             else
                 pokemon=${pokemon_desc_arr[0]}
-                sex_str=${pokemon_desc_arr[1]}
+                gender_str=${pokemon_desc_arr[1]}
             fi
 
             if [ -z "$shiny_str" ]; then
@@ -168,87 +168,87 @@ case "$#" in
             pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon | \
                 jq -r '.species.name')
 
-            # Ensure proper sex is used (if a pokemon cannot be male or cannot
+            # Ensure proper gender is used (if a pokemon cannot be male or cannot
             # be female that is enforced)
-            sex_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
+            gender_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
                 jq -r '.gender_rate')
 
             # meowstic is weird in pokeapi (upstream issue?)
             # convert meowstic-male back to meowstic for the other backends
             if [ $pokemon == 'meowstic-male' ]; then
                 pokemon=meowstic
-                sex_rate=4
+                gender_rate=4
             fi
 
-            if [ -z "$sex_str" ]; then
+            if [ -z "$gender_str" ]; then
 
-                # Random sex chance based on pokemon sex ratio
-                if [ "$sex_rate" = '-1' ]; then
-                    sex_str='sexless'
+                # Random gender chance based on pokemon gender ratio
+                if [ "$gender_rate" = '-1' ]; then
+                    gender_str='genderless'
                 else
-                    sex_div=8
-                    sex_chance=$(shuf -i 1-"$sex_div" -n 1)
-                    if [ $sex_chance -le $sex_rate ]; then
-                        sex_str='female'
+                    gender_div=8
+                    gender_chance=$(shuf -i 1-"$gender_div" -n 1)
+                    if [ $gender_chance -le $gender_rate ]; then
+                        gender_str='female'
                     else
-                        sex_str='male'
+                        gender_str='male'
                     fi
                 fi
             fi
 
 
-            if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
-                if [ $sex_rate = '8' ]; then
+            if [ $gender_str = 'male' ] || [ $gender_str = 'm' ]; then
+                if [ $gender_rate = '8' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be female!"
                         echo ""
                         exit
                     else
-                        sex=female
+                        gender=female
                     fi
-                elif [ $sex_rate = '-1' ]; then
+                elif [ $gender_rate = '-1' ]; then
                     if [ $is_random = 0 ]; then
-                        echo "$pokemon has no sex!"
+                        echo "$pokemon has no gender!"
                         echo ""
                         exit
                     else
-                        sex=male
+                        gender=male
                     fi
                 else
-                    sex=male
+                    gender=male
                 fi
-            elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
-                if [ $sex_rate = '0' ]; then
+            elif [ $gender_str = 'female' ] || [ $gender_str = 'f' ]; then
+                if [ $gender_rate = '0' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be male!"
                         echo ""
                         exit
                     else
-                        sex=male
+                        gender=male
                     fi
-                elif [ $sex_rate = '-1' ]; then
+                elif [ $gender_rate = '-1' ]; then
                     if [ $is_random = 0 ]; then
-                        echo "$pokemon has no sex!"
+                        echo "$pokemon has no gender!"
                         echo ""
                         exit
                     else
-                        # use default sex of male
-                        sex=male
+                        # use default gender of male
+                        gender=male
                     fi
                 else
-                    sex=female
+                    gender=female
                 fi
-            elif [ $sex_str = 'sexless' ]; then
-                if [ $sex_rate != '-1' ]; then
-                    echo "$pokemon_species cannot be sexless!"
+            elif [ $gender_str = 'genderless' ]; then
+                if [ $gender_rate != '-1' ]; then
+                    echo "$pokemon_species cannot be genderless!"
                     echo ""
                     exit
                 else
-                    # use default sex of male
-                    sex=male
+                    # use default gender of male
+                    gender=male
                 fi
             else
-                echo "Incorrect sex specifier! See help:"
+                echo "Incorrect gender specifier! See help:"
                 echo ""
                 _help
                 exit
@@ -260,27 +260,27 @@ case "$#" in
                 if [ $_type = 'not-shiny' ]; then
                     _type=regular
                 fi
-                if [ $sex = 'male' ]; then
-                    sex=''
+                if [ $gender = 'male' ]; then
+                    gender=''
                 fi
 
                 if [ $pokemon = 'nidoran-f' ]; then
-                    sex=''
+                    gender=''
                 fi
 
                 # Only limited number is exclusively female,
                 # thus need to do a check to see if female exists
-                # if not revert to male (i.e. sex='')
+                # if not revert to male (i.e. gender='')
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
-                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png")
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png")
                 if [ $http_code == '404' ]; then
-                    sex=''
+                    gender=''
                 fi
 
                 pokemon_image="$pokemon_desc.png"
                 pokemon_image=$_loop_num$pokemon_image
                 curl -sL \
-                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$sex/$pokemon.png" \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png" \
                     -o "$pokemon_image"
             elif [ $use_ani == 1 ]; then
                 # default type of ani sprites is "normal"
@@ -288,19 +288,19 @@ case "$#" in
                     _type=normal
                 fi
 
-                if [ $sex = 'female' ] && [ $pokemon != 'nidoran-f' ]; then
-                    sex='-f'
+                if [ $gender = 'female' ] && [ $pokemon != 'nidoran-f' ]; then
+                    gender='-f'
                 else
-                    sex=''
+                    gender=''
                 fi
 
                 # Only limited number is exclusively female,
                 # thus need to do a check to see if female exists
-                # if not revert to male (i.e. sex='')
+                # if not revert to male (i.e. gender='')
                 http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
-                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$sex.gif")
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif")
                 if [ $http_code == '404' ]; then
-                    sex=''
+                    gender=''
                 fi
 
                 # ani sprites unique naming search and replace
@@ -317,16 +317,16 @@ case "$#" in
                 pokemon_image="$pokemon_desc.gif"
                 pokemon_image=$_loop_num$pokemon_image
                 curl -sL \
-                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$sex.gif" \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif" \
                     -o "$pokemon_image"
             else
                 # default type of big sprites is "default"
-                if [ $_type = 'not-shiny' ] && [ $sex != 'female' ]; then
+                if [ $_type = 'not-shiny' ] && [ $gender != 'female' ]; then
                     _desc=default
-                elif [ $_type = 'not-shiny' ] && [ $sex == 'female' ]; then
+                elif [ $_type = 'not-shiny' ] && [ $gender == 'female' ]; then
                     _desc=female
                     _fallback=default
-                elif [ $_type = 'shiny' ] && [ $sex != 'female' ]; then
+                elif [ $_type = 'shiny' ] && [ $gender != 'female' ]; then
                     _desc=shiny
                 else
                     _desc=shiny_female
@@ -345,7 +345,7 @@ case "$#" in
 
                 # Only limited number is exclusively female,
                 # thus need to do a check to see if female exists
-                # if not revert to male (i.e. sex='')
+                # if not revert to male (i.e. gender='')
                 # note for female only pokemon, pokeapi uses male classifier
                 if [ $url == 'null' ]; then
                     _desc=$_fallback
