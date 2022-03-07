@@ -13,6 +13,13 @@ no female version/male version found)
 
 other cool stuff:
     use random unown (instead of default) if not specified unown-a/b etc
+
+    Look at the form identifier column under:
+    https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_forms.csv
+
+    Those are the ones that need to be chanced when putting in the base/species
+    name
+
     # gen 6 loved their forms
     use random vivillon
     use random flabebe, floette, florges
@@ -25,6 +32,8 @@ other cool stuff:
     # gen 8
     use random alcremie
     use random urshifu, zarude
+
+    # time of day forms/seasonal forms?
 
     2 hard
     everytime spinda shows up use random spinda art:
