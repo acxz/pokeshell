@@ -6,6 +6,7 @@ fmt_help="  %-20s\t%-54s\n"
 _help() {
     echo "pts: Show Pokemon sprites in the terminal"
     # TODO: Show a little pokeball ascii here
+    # TODO: Simplify # calls to pokeapi (random parse errors with jq?)
 
     echo ""
     echo "Usage: pts [OPTION] POKEMON..."
@@ -26,10 +27,7 @@ _help() {
 
     echo ""
 
-    echo "Random: use \"random{-1,2,4}\" for POKEMON"
-    echo "specify which gens to pull from with a comma separated list"
-    echo "TODO"
-    echo "random-1,2,3"
+    echo "Random: use \"random\" for POKEMON"
     echo "note: specifying a sex for random is a suggestion as"
     echo "random pokemon may have sex restrictions"
     echo ""
@@ -138,6 +136,11 @@ case "$#" in
                 pokemon_id=$(shuf -i 1-"$total_num" -n 1)
                 pokemon=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon_id | \
                     jq -r '.species.name')
+
+                # if random pokemon_species has no entry but its form has entry
+                # then need to use form, case in point:
+                # giratina-{altered/origin}
+                # pokemon=giratina
             fi
 
             # meowstic is weird in pokeapi (upstream issue?)
@@ -195,7 +198,7 @@ case "$#" in
 
 
             if [ $sex_str = 'male' ] || [ $sex_str = 'm' ]; then
-                if [ $sex_rate = 8 ]; then
+                if [ $sex_rate = '8' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be female!"
                         echo ""
@@ -203,7 +206,7 @@ case "$#" in
                     else
                         sex=female
                     fi
-                elif [ $sex_rate = -1 ]; then
+                elif [ $sex_rate = '-1' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon has no sex!"
                         echo ""
@@ -215,7 +218,7 @@ case "$#" in
                     sex=male
                 fi
             elif [ $sex_str = 'female' ] || [ $sex_str = 'f' ]; then
-                if [ $sex_rate = 0 ]; then
+                if [ $sex_rate = '0' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be male!"
                         echo ""
@@ -223,7 +226,7 @@ case "$#" in
                     else
                         sex=male
                     fi
-                elif [ $sex_rate = -1 ]; then
+                elif [ $sex_rate = '-1' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon has no sex!"
                         echo ""
@@ -236,7 +239,7 @@ case "$#" in
                     sex=female
                 fi
             elif [ $sex_str = 'sexless' ]; then
-                if [ $sex_rate != -1 ]; then
+                if [ $sex_rate != '-1' ]; then
                     echo "$pokemon_species cannot be sexless!"
                     echo ""
                     exit
