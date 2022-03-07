@@ -2,20 +2,16 @@
 if [[ -n "$ZSH_VERSION" ]]; then
     autoload -U +X compinit && compinit
     autoload -U +X bashcompinit && bashcompinit
-    # TODO can't get zsh to work ;(
 fi
 
 _pokeshell_completions() {
-
     curr_arg=${COMP_WORDS[${COMP_CWORD}]}
     curr_arg=${curr_arg/ns:/}
     curr_arg=${curr_arg/s:/}
     if [ "$curr_arg" = ':' ]; then
         curr_arg=''
     fi
-
     COMPREPLY=($(compgen -W "$pokemon_list" "${curr_arg}"))
-
 }
 
 IFS=$'\n' complete -F _pokeshell_completions pokeshell
