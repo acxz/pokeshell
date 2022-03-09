@@ -11,10 +11,38 @@ Key features include:
 | - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [timg](https://github.com/hzeller/timg) |
 |:-:|:-:|:-:|:-:|:-:|
 
-## Usage
+## Installation
+
+You can install pokeshell system-wide with the `install.sh` script like so:
+```bash
+sudo ./install.sh
+```
+
+This will allow you to run `pokeshell` anywhere on your system as well as add
+bash completions.
+
+An uninstall script is also provided:
+```bash
+sudo ./uninstall.sh
+
+
+If you do not want to install then you can still run pokeshell anywhere and
+use bash completions by adding the following lines to your `~/.bashrc`.
+
+```bash
+export PATH=/path/to/pokeshell:$PATH
+source /path/to/pokemon-completion.bash
+```
+
+# Usage
 
 ```bash
 pokeshell --help
+```
+
+or if running from this directory:
+```bash
+./pokeshell --help
 ```
 
 ## Examples
