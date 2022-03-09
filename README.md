@@ -34,7 +34,7 @@ export PATH=/path/to/pokeshell:$PATH
 source /path/to/pokemon-completion.bash
 ```
 
-# Usage
+## Usage
 
 ```bash
 pokeshell --help
@@ -46,7 +46,9 @@ or if running from this directory:
 ```
 
 ## Examples
-TODO
+![pokeshell1](https://user-images.githubusercontent.com/17132214/157558398-580213fa-3f46-4332-a24e-71bab1c4d033.png)
+![pokeshell2](https://user-images.githubusercontent.com/17132214/157558403-8b83eb3d-4e54-44af-b05e-e3cb9a0d1ab3.png)
+![pokeshell3](https://user-images.githubusercontent.com/17132214/157558404-ca22357f-7d21-41b4-9cad-282c863205f5.png)
 
 ## Sources
 A great amount of gratitude goes to the following projects, without which
