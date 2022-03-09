@@ -24,7 +24,7 @@ bash completions.
 An uninstall script is also provided:
 ```bash
 sudo ./uninstall.sh
-
+```
 
 If you do not want to install then you can still run pokeshell anywhere and
 use bash completions by adding the following lines to your `~/.bashrc`.
