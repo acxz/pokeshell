@@ -416,8 +416,9 @@ else
         convert -flip "$_i" "$_i"
 
         # Get size
-        _width=$(convert "${_i}[0]" -ping -format "%w" info:)
-        _height=$(convert "${_i}[0]" -ping -format "%h" info:)
+        width_height=$(identify "${_i}" | grep "\[0\]" | cut -f3 -d " ")
+        _width=$(echo $width_height | cut -f1 -d "x")
+        _height=$(echo $width_height | cut -f2 -d "x")
 
         _sum_width=$((_sum_width + _width))
         sum_widths+=("${_sum_width}")
@@ -432,7 +433,7 @@ else
     coalesce_str="convert ${pokemon_images[0]}"
 
     for _loop_num in "${!pokemon_images[@]}"; do
-        _frame=${frames[$_loop_num]}
+        _frame=${frames[_loop_num]}
 
         if [ "$_frame" -gt "$specified_frame" ]; then
             # Delete extra frames from gif
