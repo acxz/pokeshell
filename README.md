@@ -95,3 +95,5 @@ makes `pokeshell` unique among them.
     Cowsay for Pokemon
 - [31marcobarbosa/pokeTerm](https://github.com/31marcobarbosa/pokeTerm)
     Display random Pokemon sprite upon opening a terminal
+- [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
+    Show Pokemon pixel art in Kitty
