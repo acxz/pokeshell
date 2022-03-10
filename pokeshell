@@ -458,7 +458,7 @@ else
 
         if [[ ${_loop_num} -gt 0 ]]; then
             coalesce_str="${coalesce_str} \
-                -repage ${sum_widths[-1]}x${max_height} -coalesce \
+                -repage ${sum_widths[${#sum_widths[@]}-1]}x${max_height} -coalesce \
                 null: \( ${pokemon_images[_loop_num]} -coalesce \) \
                 -geometry +${sum_widths[$((_loop_num - 1))]}+0 \
                 -layers Composite\
