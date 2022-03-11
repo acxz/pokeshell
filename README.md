@@ -72,21 +72,24 @@ expand on them.) Below is a feature list of the two projects,
 makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
-|:----------------:|:-------:|:-----------:|:---------------:|
+|:----------------:|:--------:|:-----------:|:----------------:|
 | small            | ✔️       | ✔️           | ✔️               |
-| shiny small      | ✔️       | ❌           | ✔️               |
-| small forms      | ✔️       | ❌           | ❌               |
+| shiny small      | ✔️       | ✔️           | ✔️               |
+| small forms      | ✔️       | ❌<sup>1</sup>| ❌              |
 | big              | ✔️       | ✔️           | ❌               |
-| shiny big        | ✔️       | ❌           | ❌               |
-| big forms        | ✔️       | ✔️           | ❌               |
+| shiny big        | ✔️       | ❌<sup>2</sup>| ❌               |
+| big forms        | ✔️       | ❌<sup>1</sup>| ❌               |
 | animated         | ✔️       | ❌           | ❌               |
 | genders          | ✔️       | ❌           | ❌               |
 | random           | ✔️       | ✔️           | ✔️               |
 | random gens      | ❌       | ✔️           | ✔️               |
 | tab completion   | ✔️       | ❌           | ❌               |
-| terminal fit      | ✔️       | ❌           | ❌               |
+| terminal fit     | ✔️       | ❌           | ❌               |
 | multiple pokemon | ✔️       | ❌           | ❌               |
 
+<sup>1</sup>: Partial support
+
+<sup>2</sup>: Not by default
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
