@@ -75,6 +75,7 @@ case "$#" in
             exit
         fi
 
+        start_time=$(date +%s.%N)
         # Parse pokemon
         pokemon_images=()
         _loop_num=0
@@ -170,6 +171,11 @@ case "$#" in
                 # and probably other forms as well
             fi
 
+            end=$(date +%s.%N)
+            runtime=$( echo "$end - $start_time" | bc -l )
+            echo "start-form ${runtime}"
+
+            start_time=$(date +%s.%N)
             if [ "$is_form" == '1' ]; then
                 pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon-form/$pokemon | \
                     jq -r '.pokemon.name')
@@ -180,6 +186,7 @@ case "$#" in
 
             # Ensure proper gender is used (if a pokemon cannot be male or cannot
             # be female that is enforced)
+            start_time=$(date +%s.%N)
             gender_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
                 jq -r '.gender_rate')
 
@@ -198,6 +205,7 @@ case "$#" in
                 else
                     gender_div=8
                     gender_chance=$(shuf -i 1-"$gender_div" -n 1)
+
                     if [[ $gender_chance -le $gender_rate ]]; then
                         gender_str='female'
                     else
@@ -206,7 +214,11 @@ case "$#" in
                 fi
             fi
 
+            end=$(date +%s.%N)
+            runtime=$( echo "$end - $start_time" | bc -l )
+            echo "random gender ${runtime}"
 
+            start_time=$(date +%s.%N)
             if [ $gender_str = 'male' ] || [ $gender_str = 'm' ]; then
                 if [ "$gender_rate" = '8' ]; then
                     if [ $is_random = 0 ]; then
@@ -264,6 +276,11 @@ case "$#" in
                 exit
             fi
 
+            end=$(date +%s.%N)
+            runtime=$( echo "$end - $start_time" | bc -l )
+            echo "parsing-gender ${runtime}"
+
+            start_time=$(date +%s.%N)
             # curl images
             if [ $use_small == 1 ]; then
                 # default type of small sprites is "regular"
@@ -383,6 +400,12 @@ case "$#" in
         ;;
 esac
 
+end=$(date +%s.%N)
+runtime=$( echo "$end - $start_time" | bc -l )
+echo "parsing-curl_images ${runtime}"
+
+start_time=$(date +%s.%N)
+
 # Stitch pokemon images and display
 if [ $use_ani == 0 ]; then
     for _i in "${pokemon_images[@]}"; do
@@ -485,3 +508,7 @@ else
     # Display
     timg --upscale t.gif
 fi
+
+end=$(date +%s.%N)
+runtime=$( echo "$end - $start_time" | bc -l )
+#echo "curling_images-displaying ${runtime}"
