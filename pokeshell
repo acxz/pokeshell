@@ -3,6 +3,9 @@
 # Function that prints out the help text
 _help() {
     echo "pokeshell: Show Pokemon sprites in the terminal"
+    # TODO have "-r (--remove-cache) to clear cache"
+    # TODO have "-n (--no-cache) to not cache"
+    # cache combined images as well (t.png/gif)
 
     echo ""
     echo "Usage: pokeshell [OPTION] POKEMON..."
@@ -49,6 +52,7 @@ case "$#" in
     *)
         use_small=0
         use_ani=0
+        cache=1
         pokemon_start_idx=1
         flagged=0
 
@@ -69,15 +73,14 @@ case "$#" in
         fi
 
         if [ $# == 1 ] && [ $flagged == 1 ]; then
-            echo "You forgot to mention any Pokemon! See help:"
-            echo ""
             _help
+            echo ""
+            echo "You forgot to mention any Pokemon! See help."
             exit
         fi
 
         # Parse pokemon
         pokemon_images=()
-        _loop_num=0
         for pokemon_desc in "${@:$pokemon_start_idx}"; do
             # Parse for shiny
             IFS=':' read -ra pokemon_desc_arr <<< "$pokemon_desc"
@@ -114,9 +117,9 @@ case "$#" in
             elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
                 _type=not-shiny
             else
-                echo "Incorrect shiny specifier! See help:"
-                echo ""
                 _help
+                echo ""
+                echo "Incorrect shiny specifier! See help."
                 exit
             fi
 
@@ -153,8 +156,10 @@ case "$#" in
 
                 # TODO
                 # Check to see if the pokemon has forms and if so random off that
+                # upstream issue, pokeapi should list forms on pokemon_species
+                # POST
 
-                # But wait there is more, what if
+                # But wait there is more
                 # If random let's figure out which form to use
                 # TODO
             fi
@@ -274,14 +279,34 @@ case "$#" in
                     gender=male
                 fi
             else
-                echo "Incorrect gender specifier! See help:"
-                echo ""
                 _help
+                echo ""
+                echo "Incorrect gender specifier! See help."
                 exit
             fi
 
-            # curl images
+            # Create full pokemon description for filename/caching
+            cache_dir="$HOME/.cache/pokeshell"
+            mkdir -p "$cache_dir"
+            pokemon_desc_full="${_type}:$pokemon+${gender}"
+
+            # Check if image is cached
+            is_cached=0
             if [ $use_small == 1 ]; then
+                possible_cached_pokemon="$cache_dir/$pokemon_desc_full-small.png"
+            elif [ $use_ani == 1 ]; then
+                possible_cached_pokemon="$cache_dir/$pokemon_desc_full.gif"
+            else
+                possible_cached_pokemon="$cache_dir/$pokemon_desc_full-big.png"
+            fi
+
+            if [ -f "$possible_cached_pokemon" ]; then
+                is_cached=1
+                pokemon_image=${possible_cached_pokemon}
+            fi
+
+            # curl images
+            if [ $use_small == 1 ] && [ "$is_cached" == 0 ]; then
                 # default type of small sprites is "regular"
                 if [ $_type = 'not-shiny' ]; then
                     _type=regular
@@ -303,12 +328,11 @@ case "$#" in
                     gender=''
                 fi
 
-                pokemon_image="$pokemon_desc.png"
-                pokemon_image=$_loop_num$pokemon_image
+                pokemon_image="$cache_dir/$pokemon_desc_full-small.png"
                 curl -sL \
                     "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png" \
                     -o "$pokemon_image"
-            elif [ $use_ani == 1 ]; then
+            elif [ $use_ani == 1 ] && [ "$is_cached" == 0 ]; then
                 # default type of ani sprites is "normal"
                 if [ $_type = 'not-shiny' ]; then
                     _type=normal
@@ -340,12 +364,11 @@ case "$#" in
                 # gmax => gigantamax
                 pokemon=${pokemon/gmax/gigantamax}
 
-                pokemon_image="$pokemon_desc.gif"
-                pokemon_image=$_loop_num$pokemon_image
+                pokemon_image="$cache_dir/$pokemon_desc_full.gif"
                 curl -sL \
                     "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif" \
                     -o "$pokemon_image"
-            else
+            elif [ ${is_cached} == 0 ]; then
                 # default type of big sprites is "default"
                 if [ "$_type" = 'not-shiny' ] && [ "$gender" != 'female' ]; then
                     _desc=default
@@ -389,12 +412,10 @@ case "$#" in
                             jq -r $json_field)
                     fi
                 fi
-                pokemon_image="$pokemon_desc.png"
-                pokemon_image=$_loop_num$pokemon_image
+                pokemon_image="$cache_dir/$pokemon_desc_full-big.png"
                 curl -sL "$url" -o "$pokemon_image"
             fi
             pokemon_images+=("${pokemon_image}")
-            _loop_num=$((_loop_num+1))
         done
         ;;
 esac
@@ -407,32 +428,36 @@ if [ $use_ani == 0 ]; then
         convert "$_i" -trim "$_i"
 
         # Flip to level the base of each image
-        convert -flip "$_i" "$_i"
+        convert -flip "$_i" "${_i}f"
     done
 
     # Stitch them with transparent background
-    convert -background 'rgba(0, 0, 0, 0)' "${pokemon_images[@]}" +append t.png
+    convert -background 'rgba(0, 0, 0, 0)' "${pokemon_images[@]/%/f}" +append "$cache_dir/t.png"
 
     # Flip image back
-    convert -flip t.png t.png
+    convert -flip "$cache_dir/t.png" "$cache_dir/t.png"
 
-    timg --upscale t.png
+    timg --upscale "$cache_dir/t.png"
 
     # cleanup
     for _i in "${pokemon_images[@]}"; do
-        rm -f "$_i"
+        if [ "$cache" == 0 ]; then
+            rm -f "${_i}"
+        fi
+        rm -f "${_i}f"
     done
-    rm -f t.png
+    rm -f "$cache_dir/t.png"
 else
     _width=0
     min_frame=100
 
     for _i in "${pokemon_images[@]}"; do
         # Flip to level the base of each gif
-        convert -flip "$_i" "$_i"
+        # TODO flip for gif
+        convert -flip "$_i" "${_i}f"
 
         # Get size
-        width_height=$(identify "${_i}" | grep "\[0\]" | cut -f3 -d " ")
+        width_height=$(identify "${_i}f" | grep "\[0\]" | cut -f3 -d " ")
         _width=$(echo $width_height | cut -f1 -d "x")
         _height=$(echo $width_height | cut -f2 -d "x")
 
@@ -440,13 +465,13 @@ else
         sum_widths+=("${_sum_width}")
         (( _height > max_height )) && max_height=${_height}
 
-        _frame=$(identify "$_i" | wc -l)
+        _frame=$(identify "${_i}f" | wc -l)
         frames+=("${_frame}")
         (( _frame < min_frame )) && min_frame=${_frame}
     done
 
     specified_frame=$min_frame
-    coalesce_str="convert ${pokemon_images[0]}"
+    coalesce_str="convert ${pokemon_images[0]/%/f}"
 
     for _loop_num in "${!pokemon_images[@]}"; do
         _frame=${frames[_loop_num]}
@@ -461,43 +486,46 @@ else
                 extra_idx_del_str="$extra_idx_del_str$idx,"
             done
 
-            convert "${pokemon_images[_loop_num]}" -delete "$extra_idx_del_str" "${pokemon_images[_loop_num]}"
+            convert "${pokemon_images[_loop_num]/%/f}" -delete "$extra_idx_del_str" "${pokemon_images[_loop_num]/%/f}"
         else
             # Insert extra frames into gif
             extra_frames=$(( specified_frame - _frame ))
 
             for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
                 idx=$(( _extra_num * _frame / extra_frames + _extra_num ))
-                convert "${pokemon_images[_loop_num]}" "${pokemon_images[_loop_num]}[$idx]" -insert $idx "${pokemon_images[_loop_num]}"
+                convert "${pokemon_images[_loop_num]/%/f}" "${pokemon_images[_loop_num]/%/f}[$idx]" -insert $idx "${pokemon_images[_loop_num]/%/f}"
             done
         fi
 
         if [[ ${_loop_num} -gt 0 ]]; then
             coalesce_str="${coalesce_str} \
                 -repage ${sum_widths[${#sum_widths[@]}-1]}x${max_height} -coalesce \
-                null: \( ${pokemon_images[_loop_num]} -coalesce \) \
+                null: \( ${pokemon_images[_loop_num]/%/f} -coalesce \) \
                 -geometry +${sum_widths[$((_loop_num - 1))]}+0 \
                 -layers Composite\
             "
         fi
     done
 
-    coalesce_str="${coalesce_str} t.gif"
+    coalesce_str="${coalesce_str} $cache_dir/t.gif"
     eval "$coalesce_str"
 
     # Flip image back
-    convert -flip t.gif t.gif
+    convert -flip "$cache_dir/t.gif" "$cache_dir/t.gif"
 
     # Cleanup
     for _i in "${pokemon_images[@]}"; do
-        rm -f "${_i}"
+        if [ "$cache" == 0 ]; then
+            rm -f "${_i}"
+        fi
+        rm -f "${_i}f"
     done
 
     trap ctrl_c INT
     function  ctrl_c() {
-        rm -f t.gif
+        rm -f "$cache_dir/t.gif"
     }
 
     # Display
-    timg --upscale t.gif
+    timg --upscale "$cache_dir/t.gif"
 fi
