@@ -82,7 +82,7 @@ makes `pokeshell` unique among them.
 | animated         | ✔️       | ❌           | ❌               |
 | genders          | ✔️       | ❌           | ❌               |
 | random           | ✔️       | ✔️           | ✔️               |
-| random gens      | ❌       | ✔️           | ✔️               |
+| random gens      | ✔️       | ✔️           | ✔️               |
 | tab completion   | ✔️       | ❌           | ❌               |
 | terminal fit     | ✔️       | ❌           | ❌               |
 | multiple pokemon | ✔️       | ❌           | ❌               |

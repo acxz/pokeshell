@@ -3,8 +3,6 @@
 # Function that prints out the help text
 _help() {
     echo "pokeshell: Show Pokemon sprites in the terminal"
-    # TODO: Show a little pokeball ascii here
-    # TODO: Simplify # calls to pokeapi (random parse errors with jq?)
 
     echo ""
     echo "Usage: pokeshell [OPTION] POKEMON..."
@@ -25,7 +23,8 @@ _help() {
 
     echo ""
 
-    echo "Random: use \"random\" for POKEMON"
+    echo "Random: use \"random{,GEN,...}\" for POKEMON"
+    echo "can add comma separated list for random pokemon from specified gens"
     echo "note: specifying a gender for random is a suggestion as"
     echo "random pokemon may have gender restrictions"
     echo ""
@@ -34,7 +33,8 @@ _help() {
     echo "          pokeshell s:nidoran-f+f nidoran-m"
     echo "          pokeshell -s s:bulbasaur+m ns:pikachu+f venusaur"
     echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
-    echo "          pokeshell -a shiny:squirtle s:pikachu-gmax"
+    echo "          pokeshell -a random s:pikachu-gmax"
+    echo "          pokeshell random,1,3+f s:random,4,1"
     echo "          pokeshell type-null farfetchd sirfetchd"
 }
 
@@ -120,17 +120,33 @@ case "$#" in
                 exit
             fi
 
-            # TODO
-            # Delimit gens on comma
-            # Allow to specify range and specifics like yay
             # Parse for random
+            # Delimit pokemon on comma to see if we are using random gens
             is_random=0
+            IFS=',' read -ra pokemon_random_arr <<< "$pokemon"
+            pokemon=${pokemon_random_arr[0]}
+
             if [ "$pokemon" = 'random' ]; then
                 is_random=1
-                total_num=898
+                gen_ids=(1 152 251 387 494 650 722 810 898)
+                gen_start=0
+                gen_end=8
+
+                # Delimit pokemon on comma to see if we are using random gens
+                if [ ${#pokemon_random_arr[@]} != 1 ]; then
+                    use_random_gen=1
+                    for (( _idx=1; _idx<${#pokemon_random_arr[@]}; _idx++ )); do
+                        gens+=("${pokemon_random_arr[_idx]}")
+                    done
+
+                    # Pick random gen
+                    random_gen=$(shuf -e "${gens[@]}" -n 1)
+                    gen_end=${random_gen}
+                    gen_start=$((gen_end-1))
+                fi
 
                 # Choose random pokemon id
-                pokemon_id=$(shuf -i 1-"$total_num" -n 1)
+                pokemon_id=$(shuf -i "${gen_ids[gen_start]}"-"${gen_ids[gen_end]}" -n 1)
                 pokemon=$(curl -s \
                     "https://pokeapi.co/api/v2/pokemon/$pokemon_id" | \
                     jq -r '.species.name')
