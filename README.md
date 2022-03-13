@@ -73,6 +73,8 @@ makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
 |:----------------:|:--------:|:-----------:|:----------------:|
+| random           | ✔️       | ✔️           | ✔️               |
+| random gens      | ✔️       | ✔️           | ✔️               |
 | small            | ✔️       | ✔️           | ✔️               |
 | shiny small      | ✔️       | ✔️           | ✔️               |
 | small forms      | ✔️       | ❌<sup>1</sup>| ❌              |
@@ -81,10 +83,8 @@ makes `pokeshell` unique among them.
 | big forms        | ✔️       | ❌<sup>1</sup>| ❌               |
 | animated         | ✔️       | ❌           | ❌               |
 | genders          | ✔️       | ❌           | ❌               |
-| random           | ✔️       | ✔️           | ✔️               |
-| random gens      | ✔️       | ✔️           | ✔️               |
 | tab completion   | ✔️       | ❌           | ❌               |
-| terminal fit     | ✔️       | ❌           | ❌               |
+| terminal fit      | ✔️       | ❌           | ❌               |
 | multiple pokemon | ✔️       | ❌           | ❌               |
 
 <sup>1</sup>: Partial support
