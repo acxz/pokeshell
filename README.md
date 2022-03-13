@@ -86,13 +86,14 @@ makes `pokeshell` unique among them.
 | tab completion   | ✔️       | ❌           | ❌               |
 | terminal fit      | ✔️       | ❌           | ❌               |
 | multiple pokemon | ✔️       | ❌           | ❌               |
-| speed<sup>*</sup>| 1x       | 11x          | 75x             |
+| speed<sup>*</sup>| 1x       | 4x          | 30x             |
 
 <sup>1</sup>: Partial support
 
 <sup>2</sup>: Not by default
 
-speed<sup>*</sup>: Normalized to pokeshell, tested with average of 100 runs
+speed<sup>*</sup>: Normalized to pokeshell, tested with average of 500 runs,
+using default pokeshell caching
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
