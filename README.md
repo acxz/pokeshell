@@ -87,8 +87,8 @@ makes `pokeshell` unique among them.
 | terminal fit     | ✔️        | ❌          | ❌               |
 | multiple pokemon | ✔️        | ❌          | ❌               |
 | caching          | ✔️        | ❌          | ✔️                |
-| cached speed <sup>+</sup>   | 1x | 1.6x   | 8x               |
-| first run speed <sup>+</sup>| 1x | 4x     | 20x              |
+| cached speed <sup>+</sup>   | 1x | 0.5x   | 2x               |
+| first run speed <sup>+</sup>| 1x | 3.5x   | 14x              |
 
 <sup>1</sup>: Partial support
 
