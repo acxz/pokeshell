@@ -87,14 +87,14 @@ makes `pokeshell` unique among them.
 | terminal fit     | ✔️        | ❌          | ❌               |
 | multiple pokemon | ✔️        | ❌          | ❌               |
 | caching          | ✔️        | ❌          | ✔️                |
-| cached speed <sup>+</sup>   | 1x | 0.5x   | 2x               |
-| first run speed <sup>+</sup>| 1x | 3.5x   | 14x              |
+| cached speed <sup>+</sup>   | 1x | 0.33x  | 2x               |
+| first run speed <sup>+</sup>| 1x | 3x     | 14x              |
 
 <sup>1</sup>: Partial support
 
 <sup>2</sup>: Not by default
 
-<sup>+</sup>: Normalized to pokeshell, tested with average of 10 runs, larger
+<sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster
 
 ## Other Pokémon Sprite Terminal Projects
