@@ -94,7 +94,7 @@ makes `pokeshell` unique among them.
 
 <sup>2</sup>: Not by default
 
-<sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
+<sup>+</sup>: Normalized to pokeshell, tested with average of 10 runs, larger
 is faster
 
 ## Other Pokémon Sprite Terminal Projects
