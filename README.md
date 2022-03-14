@@ -73,27 +73,29 @@ makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
 |:----------------:|:--------:|:-----------:|:----------------:|
-| random           | ✔️       | ✔️           | ✔️               |
-| random gens      | ✔️       | ✔️           | ✔️               |
-| small            | ✔️       | ✔️           | ✔️               |
-| shiny small      | ✔️       | ✔️           | ✔️               |
-| small forms      | ✔️       | ❌<sup>1</sup>| ❌              |
-| big              | ✔️       | ✔️           | ❌               |
-| shiny big        | ✔️       | ❌<sup>2</sup>| ❌               |
-| big forms        | ✔️       | ❌<sup>1</sup>| ❌               |
-| animated         | ✔️       | ❌           | ❌               |
-| genders          | ✔️       | ❌           | ❌               |
-| tab completion   | ✔️       | ❌           | ❌               |
-| terminal fit      | ✔️       | ❌           | ❌               |
-| multiple pokemon | ✔️       | ❌           | ❌               |
-| speed<sup>*</sup>| 1x       | 4x          | 30x             |
+| random           | ✔️        | ✔️           | ✔️                |
+| random gens      | ✔️        | ✔️           | ✔️                |
+| small            | ✔️        | ✔️           | ✔️                |
+| shiny small      | ✔️        | ✔️           | ✔️                |
+| small forms      | ✔️        | ❌<sup>1</sup>| ❌             |
+| big              | ✔️        | ✔️           | ❌               |
+| shiny big        | ✔️        | ❌<sup>2</sup>| ❌             |
+| big forms        | ✔️        | ❌<sup>1</sup>| ❌             |
+| animated         | ✔️        | ❌          | ❌               |
+| genders          | ✔️        | ❌          | ❌               |
+| tab completion   | ✔️        | ❌          | ❌               |
+| terminal fit     | ✔️        | ❌          | ❌               |
+| multiple pokemon | ✔️        | ❌          | ❌               |
+| caching          | ✔️        | ❌          | ✔️                |
+| cached speed <sup>+</sup>   | 1x | 1.6x   | 8x               |
+| first run speed <sup>+</sup>| 1x | 4x     | 20x              |
 
 <sup>1</sup>: Partial support
 
 <sup>2</sup>: Not by default
 
-speed<sup>*</sup>: Normalized to pokeshell, tested with average of 500 runs,
-using default pokeshell caching
+<sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
+is faster
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
