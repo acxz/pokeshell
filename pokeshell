@@ -13,7 +13,8 @@ _help() {
         "-b, --big" "Display big sprites (default)" \
         "-a, --animation" "Display animated sprites" \
         "-s, --small" "Display small sprites" \
-        "-h, --help" "Print this help." \
+        "-r, --remove-cache" "Remove cache directory" \
+        "-h, --help" "Print this help" \
 
     echo ""
     echo "Shiny: prepend \"s(hiny):\" to POKEMON"
@@ -57,7 +58,10 @@ case "$#" in
         flagged=0
         true_gender=0
 
-        if [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
+        if [ "$1" == '-r' ] || [ "$1" == '--remove-cache' ]; then
+            rm -r -v "$HOME/.cache/pokeshell"
+            exit
+        elif [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
             use_small=1
             pokemon_start_idx=2
             flagged=1
