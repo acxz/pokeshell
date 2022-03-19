@@ -1,7 +1,7 @@
 # zsh support
 if [[ -n "$ZSH_VERSION" ]]; then
-    autoload -U +X compinit && compinit
-    autoload -U +X bashcompinit && bashcompinit
+    autoload -Uz +X compinit && compinit
+    autoload -Uz +X bashcompinit && bashcompinit
 fi
 
 _pokeshell() {
@@ -11,12 +11,17 @@ _pokeshell() {
     if [ "$curr_arg" = ':' ]; then
         curr_arg=''
     fi
-    COMPREPLY=($(compgen -W "$pokemon_list" "${curr_arg}"))
+
+    # cant get zsh to respect the last word argument
+    # See: https://github.com/zsh-users/zsh/blob/master/Completion/bashcompinit#L154-L156
+    # for more info
+    # Prob need to use a more specific zsh solution
+    COMPREPLY=($(compgen -W "$_pokemon_list" -- "${curr_arg}"))
 }
 
 IFS=$'\n' complete -F _pokeshell pokeshell
 
-pokemon_list='
+_pokemon_list='
 random
 bulbasaur
 ivysaur
