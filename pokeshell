@@ -296,6 +296,9 @@ case "$#" in
             cache_dir="$HOME/.cache/pokeshell"
             mkdir -p "$cache_dir"
             pokemon_desc_full="${_type}:$pokemon+${gender}"
+            if [ "$is_random" == 1 ]; then
+                echo "$pokemon_desc_full"
+            fi
 
             # Check if image is cached
             is_cached=0
