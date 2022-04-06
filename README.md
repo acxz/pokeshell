@@ -73,27 +73,30 @@ makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
 |:----------------:|:--------:|:-----------:|:----------------:|
-| random           | ✔️        | ✔️           | ✔️                |
-| random gens      | ✔️        | ✔️           | ✔️                |
-| small            | ✔️        | ✔️           | ✔️                |
-| shiny small      | ✔️        | ✔️           | ✔️                |
+| random           | ✔️        | ✔️          | ✔️               |
+| random gens      | ✔️        | ✔️          | ✔️               |
+| small            | ✔️        | ✔️          | ✔️               |
+| shiny small      | ✔️        | ✔️          | ✔️               |
 | small forms      | ✔️        | ❌<sup>1</sup>| ❌             |
-| big              | ✔️        | ✔️           | ❌               |
+| big              | ✔️        | ✔️          | ❌               |
 | shiny big        | ✔️        | ❌<sup>2</sup>| ❌             |
 | big forms        | ✔️        | ❌<sup>1</sup>| ❌             |
 | animated         | ✔️        | ❌          | ❌               |
 | genders          | ✔️        | ❌          | ❌               |
 | tab completion   | ✔️        | ❌          | ❌               |
-| terminal fit     | ✔️        | ❌          | ❌               |
+| terminal fit      | ✔️        | ❌          | ❌               |
 | multiple pokemon | ✔️        | ❌          | ❌               |
-| caching          | ✔️        | ❌<sup>2</sup>| ✔️              |
-| default speed <sup>+</sup>  | 1x | 0.8x   | 7x               |
-| cached speed <sup>+</sup>   | 1x | 5x     | 7x               |
-| first run speed <sup>+</sup>| 1x | 5x     | 40x              |
+| caching          | ✔️        | ❌<sup>2</sup>| ✔️             |
+| dependencies <sup>-</sup>   | 5  | 3      | 2                |
+| default speed <sup>+</sup>  | 1x | 1x     | 7x               |
+| cached speed <sup>+</sup>   | 1x | 6x     | 7x               |
+| first run speed <sup>+</sup> | 1x | 3x     | 22x              |
 
 <sup>1</sup>: Partial support
 
 <sup>2</sup>: Not by default
+
+<sup>+</sup>: Number of dependencies, lower is better
 
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster, default speed corresponds to default settings of each script
