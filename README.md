@@ -96,7 +96,7 @@ makes `pokeshell` unique among them.
 
 <sup>2</sup>: Not by default
 
-<sup>+</sup>: Number of dependencies, lower is better
+<sup>-</sup>: Number of dependencies, lower is better
 
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster, default speed corresponds to default settings of each script
