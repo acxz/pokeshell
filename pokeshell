@@ -3,7 +3,6 @@
 # Function that prints out the help text
 _help() {
     echo "pokeshell: Show Pokemon sprites in the terminal"
-    # TODO have "-r (--remove-cache) to clear cache"
     # TODO have "-n (--no-cache) to not cache"
     # cache combined images as well (t.png/gif)
 
