@@ -449,16 +449,14 @@ if [ $use_ani == 0 ]; then
         # Flip image back
         convert -flip "$cache_dir/t.png" "$cache_dir/t.png"
 
-        #timg --upscale "$cache_dir/t.png"
-        timg -b none "$cache_dir/t.png"
+        timg -p q -b none "$cache_dir/t.png"
     else
         # trim only if not cached, if cached use the cached trim image
         if [ "$is_cached" == 0 ]; then
             convert "${pokemon_images[0]}" -trim "${pokemon_images[0]}"
         fi
 
-        #timg --upscale "${pokemon_images[0]}"
-        timg -b none "${pokemon_images[0]}"
+        timg -p q -b none "${pokemon_images[0]}"
     fi
 
     # cleanup
@@ -548,8 +546,5 @@ else
     }
 
     # Display
-    #timg --upscale "$cache_dir/t.gif"
-    timg -b none "$cache_dir/t.gif"
+    timg -p q -b none "$cache_dir/t.gif"
 fi
-
-# TODO need to use timg --upscale for sixel based terminals like kitty
