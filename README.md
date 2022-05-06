@@ -90,7 +90,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 | caching          | ✔️            | ❌<sup>2</sup>| ✔️              | ✔️         |
 | no compilation   | ✔️            | ✔️          | ✔️                | ❌         |
 | no internet      | ❌            | ❌          | ✔️                | ✔️         |
-| dependencies <sup>-</sup>   | 5  | 2          | 1                 | 1          |
+| # dependencies <sup>-</sup>   | 5  | 2          | 1                 | 1          |
 | default speed <sup>+</sup>  | 1x | 0.7x       | 1.2x              | 4.5x       |
 | cached speed <sup>+</sup>   | 1x | 5x         | 1.2x              | 4.5x       |
 | first run speed <sup>+</sup> | 1x | 3x         | 5x                | 21x        |
@@ -99,7 +99,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 
 <sup>2</sup>: Not by default
 
-<sup>-</sup>: Number of dependencies, lower is better
+<sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python, krabby uses Rust
 
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster, default speed corresponds to default settings of each script
