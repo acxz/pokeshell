@@ -66,31 +66,34 @@ Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spritein
 ## Similar Projects
 pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
-expand on them.) Below is a feature list of the two projects,
+expand on them.) Below is a feature list of the 3 projects,
+[talwat/pokeget](https://github.com/talwat/pokeget),
 [phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts) &
-[talwat/pokeget](https://github.com/talwat/pokeget), that also fill this role and what
-makes `pokeshell` unique among them.
+[yannjor/krabby](https://github.com/yannjor/krabby),
+that also fill this role and what makes `pokeshell` unique among them.
 
-| **Feature**      | **pokeshell** | **pokeget** | **colorscripts** |
-|:----------------:|:--------:|:-----------:|:----------------:|
-| random           | ✔️        | ✔️          | ✔️               |
-| random gens      | ✔️        | ✔️          | ✔️               |
-| small            | ✔️        | ✔️          | ✔️               |
-| shiny small      | ✔️        | ✔️          | ✔️               |
-| small forms      | ✔️        | ❌<sup>1</sup>| ❌             |
-| big              | ✔️        | ✔️          | ❌               |
-| shiny big        | ✔️        | ❌<sup>2</sup>| ❌             |
-| big forms        | ✔️        | ❌<sup>1</sup>| ❌             |
-| animated         | ✔️        | ❌          | ❌               |
-| genders          | ✔️        | ❌          | ❌               |
-| tab completion   | ✔️        | ❌          | ❌               |
-| terminal fit      | ✔️        | ❌          | ❌               |
-| multiple pokemon | ✔️        | ❌          | ❌               |
-| caching          | ✔️        | ❌<sup>2</sup>| ✔️             |
-| dependencies <sup>-</sup>   | 5  | 3      | 2                |
-| default speed <sup>+</sup>  | 1x | 1x     | 7x               |
-| cached speed <sup>+</sup>   | 1x | 6x     | 7x               |
-| first run speed <sup>+</sup> | 1x | 3x     | 22x              |
+| **Feature**      | **pokeshell** | **pokeget** | **colorscripts** | **krabby** |
+|:----------------:|:-------------:|:-----------:|:----------------:|:----------:|
+| random           | ✔️            | ✔️          | ✔️                | ✔️         |
+| random gens      | ✔️            | ✔️          | ✔️                | ✔️         |
+| small            | ✔️            | ✔️          | ✔️                | ✔️         |
+| shiny small      | ✔️            | ✔️          | ✔️                | ✔️         |
+| small forms      | ✔️            | ❌<sup>1</sup>| ❌              | ❌<sup>1</sup> |
+| big              | ✔️            | ✔️          | ❌                | ❌         |
+| shiny big        | ✔️            | ❌<sup>2</sup>| ❌              | ❌         |
+| big forms        | ✔️            | ❌<sup>1</sup>| ❌              | ❌         |
+| animated         | ✔️            | ❌          | ❌                | ❌         |
+| genders          | ✔️            | ❌          | ❌                | ❌         |
+| tab completion   | ✔️            | ❌          | ❌                | ❌         |
+| terminal fit      | ✔️            | ❌          | ❌                | ❌         |
+| multiple pokemon | ✔️            | ❌          | ❌                | ❌         |
+| caching          | ✔️            | ❌<sup>2</sup>| ✔️              | ✔️         |
+| no compilation   | ✔️            | ✔️          | ✔️                | ❌         |
+| no internet      | ❌            | ❌          | ✔️                | ✔️         |
+| dependencies <sup>-</sup>   | 5  | 2          | 1                 | 1          |
+| default speed <sup>+</sup>  | 1x | 0.7x       | 1.2x              | 4.5x       |
+| cached speed <sup>+</sup>   | 1x | 5x         | 1.2x              | 4.5x       |
+| first run speed <sup>+</sup> | 1x | 3x         | 5x                | 21x        |
 
 <sup>1</sup>: Partial support
 
@@ -101,6 +104,10 @@ makes `pokeshell` unique among them.
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster, default speed corresponds to default settings of each script
 
+### Other Similar Projects
+- [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
+    Show Pokemon sprites in Kitty
+
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
     Fetch Pokedex entries in your terminal
@@ -108,5 +115,3 @@ is faster, default speed corresponds to default settings of each script
     Cowsay for Pokemon
 - [31marcobarbosa/pokeTerm](https://github.com/31marcobarbosa/pokeTerm)
     Display random Pokemon sprite upon opening a terminal
-- [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
-    Show Pokemon pixel art in Kitty
