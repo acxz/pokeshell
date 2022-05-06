@@ -66,7 +66,7 @@ Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spritein
 ## Similar Projects
 pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
-expand on them.) Below is a feature list of the 3 projects,
+expand on them.) Below is a feature list of 3 projects,
 [talwat/pokeget](https://github.com/talwat/pokeget),
 [phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts) &
 [yannjor/krabby](https://github.com/yannjor/krabby),
@@ -90,6 +90,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 | caching          | ✔️            | ❌<sup>2</sup>| ✔️              | ✔️         |
 | no compilation   | ✔️            | ✔️          | ✔️                | ❌         |
 | no internet      | ❌            | ❌          | ✔️                | ✔️         |
+| block size <sup>#</sup>    | quarter/true image | full | half      | full      |
 | # dependencies <sup>-</sup>   | 5  | 2          | 1                 | 1          |
 | default speed <sup>+</sup>  | 1x | 0.7x       | 1.2x              | 4.5x       |
 | cached speed <sup>+</sup>   | 1x | 5x         | 1.2x              | 4.5x       |
@@ -98,6 +99,8 @@ that also fill this role and what makes `pokeshell` unique among them.
 <sup>1</sup>: Partial support
 
 <sup>2</sup>: Not by default
+
+<sup>#</sup>: the smaller it is, the higher the resolution
 
 <sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python, krabby uses Rust
 
