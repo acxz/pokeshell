@@ -110,6 +110,8 @@ is faster, default speed corresponds to default settings of each script
 ### Other Similar Projects
 - [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
     Show Pokemon sprites in Kitty
+-[eramdam/pokemonshow](https://github.com/eramdam/pokemonshow)
+    Show Pokemon sprites using JavaScript
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
