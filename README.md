@@ -75,27 +75,25 @@ that also fill this role and what makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokescript** | **pokeget** | **colorscripts** | **krabby** |
 |:----------------:|:-------------:|:--------------:|:-----------:|:----------------:|:----------:|
-| random           | ✔️            | ✔️              | ✔️          | ✔️                | ✔️         |
-| random gens      | ✔️            | ✔️              | ✔️          | ✔️                | ✔️         |
-| small            | ✔️            | ✔️              | ✔️          | ✔️                | ✔️         |
-| shiny small      | ✔️            | ✔️              | ✔️          | ✔️                | ✔️         |
-| small forms      | ✔️            | ❌              | ❌<sup>1</sup>| ❌              | ❌<sup>1</sup> |
-| big              | ✔️            | ❌              | ✔️          | ❌                | ❌         |
-| shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌              | ❌         |
-| big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌              | ❌         |
-| animated         | ✔️            | ❌              | ❌          | ❌                | ❌         |
-| genders          | ✔️            | ❌              | ❌          | ❌                | ❌         |
-| tab completion   | ✔️            | ❌              | ❌          | ❌                | ❌         |
-| terminal fit      | ✔️            | ❌              | ❌          | ❌                | ❌         |
-| multiple pokemon | ✔️            | ❌              | ❌          | ❌                | ❌         |
-| caching          | ✔️            | ✔️              | ❌<sup>2</sup>| ✔️              | ✔️         |
-| no compilation   | ✔️            | ✔️              | ✔️          | ✔️                | ❌         |
-| no internet      | ❌            | ✔️              | ❌          | ✔️                | ✔️         |
-| block size <sup>#</sup>  | quarter/true image | full | full     | half              | full       |
-| # dependencies <sup>-</sup> | 5  | 1              | 2           | 1                 | 1          |
-| default speed <sup>+</sup>  | 1x | 40x            | 0.7x        | 1.2x              | 4.5x       |
-| cached speed <sup>+</sup>   | 1x | 40x            | 5x          | 1.2x              | 4.5x       |
-| first run speed <sup>+</sup> | 1x | 120x           | 2x          | 4x                | 16x        |
+| random           | ✔️            | ✔️               | ✔️           | ✔️                | ✔️          |
+| small            | ✔️            | ✔️               | ✔️           | ✔️                | ✔️          |
+| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ❌             | ❌<sup>1</sup> |
+| big              | ✔️            | ❌              | ✔️           | ❌               | ❌         |
+| shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌             | ❌         |
+| big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌             | ❌         |
+| animated         | ✔️            | ❌              | ❌          | ❌               | ❌         |
+| terminal fit     | ✔️            | ❌              | ❌          | ❌               | ❌         |
+| genders          | ✔️            | ✔️               | ❌          | ❌               | ❌         |
+| multiple pokemon | ✔️            | ✔️               | ❌          | ❌               | ❌         |
+| tab completion   | ✔️            | ✔️               | ❌          | ❌               | ❌         |
+| caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              | ✔️          |
+| no compilation   | ✔️            | ✔️               | ✔️           | ✔️                | ❌         |
+| no internet      | ❌           | ✔️               | ❌          | ✔️                | ✔️          |
+| block size <sup>#</sup>      | quarter/true image | full | full | half             | full       |
+| # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                | 1          |
+| default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             | 5.3x       |
+| cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             | 5.3x       |
+| first run speed <sup>+</sup> | 1x | 16x           | 3x          | 3x               | 15x        |
 
 <sup>1</sup>: Partial support
 
