@@ -66,10 +66,11 @@ Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spritein
 ## Similar Projects
 pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
-expand on them.) Below is a feature list of 3 projects,
+expand on them.) Below is a feature list of some projects (
+[acxz/pokescript](https://github.com/acxz/pokescript),
 [talwat/pokeget](https://github.com/talwat/pokeget),
-[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts) &
-[yannjor/krabby](https://github.com/yannjor/krabby),
+[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts),
+[yannjor/krabby](https://github.com/yannjor/krabby))
 that also fill this role and what makes `pokeshell` unique among them.
 
 | **Feature**      | **pokeshell** | **pokescript** | **pokeget** | **colorscripts** | **krabby** |
