@@ -89,7 +89,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 | caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              | ✔️          |
 | no compilation   | ✔️            | ✔️               | ✔️           | ✔️                | ❌         |
 | no internet      | ❌           | ✔️               | ❌          | ✔️                | ✔️          |
-| block size <sup>#</sup>      | quarter/true image | full | full | half             | full       |
+| block size <sup>#</sup>      | quarter/true image | half | full | half             | full       |
 | # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                | 1          |
 | default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             | 5.3x       |
 | cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             | 5.3x       |
