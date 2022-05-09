@@ -69,31 +69,29 @@ be the last. (I just hope that the next project can take these ideas and only
 expand on them.) Below is a feature list of some projects (
 [acxz/pokescript](https://github.com/acxz/pokescript),
 [talwat/pokeget](https://github.com/talwat/pokeget),
-[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts),
-[yannjor/krabby](https://github.com/yannjor/krabby))
+[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts))
 that also fill this role and what makes `pokeshell` unique among them.
 
-| **Feature**      | **pokeshell** | **pokescript** | **pokeget** | **colorscripts** | **krabby** |
-|:----------------:|:-------------:|:--------------:|:-----------:|:----------------:|:----------:|
-| random           | ✔️            | ✔️               | ✔️           | ✔️                | ✔️          |
-| small            | ✔️            | ✔️               | ✔️           | ✔️                | ✔️          |
-| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ❌             | ❌<sup>1</sup> |
-| big              | ✔️            | ❌              | ✔️           | ❌               | ❌         |
-| shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌             | ❌         |
-| big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌             | ❌         |
-| animated         | ✔️            | ❌              | ❌          | ❌               | ❌         |
-| terminal fit     | ✔️            | ❌              | ❌          | ❌               | ❌         |
-| genders          | ✔️            | ✔️               | ❌          | ❌               | ❌         |
-| multiple pokemon | ✔️            | ✔️               | ❌          | ❌               | ❌         |
-| tab completion   | ✔️            | ✔️               | ❌          | ❌               | ❌         |
-| caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              | ✔️          |
-| no compilation   | ✔️            | ✔️               | ✔️           | ✔️                | ❌         |
-| no internet      | ❌           | ✔️               | ❌          | ✔️                | ✔️          |
-| block size <sup>#</sup>      | quarter/true image | half | full | half             | full       |
-| # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                | 1          |
-| default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             | 5.3x       |
-| cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             | 5.3x       |
-| first run speed <sup>+</sup> | 1x | 16x           | 3x          | 3x               | 15x        |
+| **Feature**      | **pokeshell** | **pokescript** | **pokeget** | **colorscripts** |
+|:----------------:|:-------------:|:--------------:|:-----------:|:----------------:|
+| random           | ✔️            | ✔️               | ✔️           | ✔️                |
+| small            | ✔️            | ✔️               | ✔️           | ✔️                |
+| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ❌             |
+| big              | ✔️            | ❌              | ✔️           | ❌               |
+| shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌             |
+| big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌             |
+| animated         | ✔️            | ❌              | ❌          | ❌               |
+| terminal fit     | ✔️            | ❌              | ❌          | ❌               |
+| genders          | ✔️            | ✔️               | ❌          | ❌               |
+| multiple pokemon | ✔️            | ✔️               | ❌          | ❌               |
+| tab completion   | ✔️            | ✔️               | ❌          | ❌               |
+| caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              |
+| no internet      | ❌           | ✔️               | ❌          | ✔️                |
+| block size <sup>#</sup>      | quarter/true image | half | full | half             |
+| # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                |
+| default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             |
+| cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             |
+| first run speed <sup>+</sup> | 1x | 16x           | 3x          | 3x               |
 
 <sup>1</sup>: Partial support
 
@@ -101,7 +99,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 
 <sup>#</sup>: the smaller it is, the higher the resolution
 
-<sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python, krabby uses Rust
+<sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python
 
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
 is faster, default speed corresponds to default settings of each script
@@ -111,6 +109,8 @@ is faster, default speed corresponds to default settings of each script
     Show Pokemon sprites in Kitty
 - [eramdam/pokemonshow](https://github.com/eramdam/pokemonshow)
     Show Pokemon sprites using JavaScript
+- [yannjor/krabby](https://github.com/yannjor/krabby)
+    Show Pokemon sprites using Rust
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
