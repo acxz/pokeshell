@@ -76,7 +76,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 |:----------------:|:-------------:|:--------------:|:-----------:|:----------------:|
 | random           | ✔️            | ✔️               | ✔️           | ✔️                |
 | small            | ✔️            | ✔️               | ✔️           | ✔️                |
-| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ❌             |
+| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ✔️             |
 | big              | ✔️            | ❌              | ✔️           | ❌               |
 | shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌             |
 | big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌             |
