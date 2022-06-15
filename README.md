@@ -21,19 +21,18 @@ sudo ./install.sh
 ```
 
 This will allow you to run `pokeshell` anywhere on your system as well as add
-bash completions.
+shell completions.
 
 An uninstall script is also provided:
 ```bash
 sudo ./uninstall.sh
 ```
 
-If you do not want to install then you can still run pokeshell anywhere and
-use bash completions by adding the following lines to your `~/.bashrc`.
+If you do not want to install then you can still run pokeshell anywhere
+by adding the following lines to your `~/.bashrc`.
 
 ```bash
 export PATH=/path/to/pokeshell:$PATH
-source /path/to/pokemon-completion.bash
 ```
 
 ## Usage
