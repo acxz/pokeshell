@@ -10,7 +10,7 @@ Key features include:
 
 ## Dependencies
 
-| - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [timg](https://github.com/hzeller/timg) |
+| - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [chafa](https://github.com/hpjansson/chafa/) |
 |:-:|:-:|:-:|:-:|:-:|
 
 ## Installation
@@ -86,7 +86,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 | tab completion   | ✔️            | ✔️               | ❌          | ❌               |
 | caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              |
 | no internet      | ❌           | ✔️               | ❌          | ✔️                |
-| block size <sup>#</sup>      | quarter/true image | half | full | half             |
+| block size <sup>#</sup>      | ANSI | half        | full        | half             |
 | # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                |
 | default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             |
 | cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             |
@@ -96,7 +96,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 
 <sup>2</sup>: Not by default
 
-<sup>#</sup>: the smaller it is, the higher the resolution
+<sup>#</sup>: in order of resolution: ANSI > half > full
 
 <sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python
 
