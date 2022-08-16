@@ -450,8 +450,7 @@ if [ $use_ani == 0 ]; then
         convert -flip "$cache_dir/t.png" "$cache_dir/t.png"
 
         # pre scale for pixel perfect chafa
-        convert "$cache_dir/t.png" -scale 800% "$cache_dir/t.png"
-        chafa -w 9 --symbols all --scale 1 "$cache_dir/t.png"
+        convert "$cache_dir/t.png" -scale 200% "$cache_dir/t.png"
     else
         # trim only if not cached, if cached use the cached trim image
         if [ "$is_cached" == 0 ]; then
@@ -459,9 +458,11 @@ if [ $use_ani == 0 ]; then
         fi
 
         # pre scale for pixel perfect chafa
-        convert "${pokemon_images[0]}" -scale 800% "$cache_dir/t.png"
-        chafa -w 9 --symbols all --scale 1 "$cache_dir/t.png"
+        convert "${pokemon_images[0]}" -scale 200% "$cache_dir/t.png"
     fi
+
+    # display
+    chafa -w 9 --symbols all "$cache_dir/t.png"
 
     # cleanup
     for _i in "${pokemon_images[@]}"; do
