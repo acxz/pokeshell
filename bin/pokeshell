@@ -551,5 +551,8 @@ else
     }
 
     # Display
-    chafa --format symbols --symbols all "$cache_dir/t.gif"
+    chafa --format symbols --symbols all "$cache_dir/t.gif" 2> /dev/null
+    if [ "$?" -eq 2 ]; then
+        chafa --symbols all "$cache_dir/t.gif"
+    fi
 fi
