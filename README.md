@@ -67,41 +67,31 @@ pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
 expand on them.) Below is a feature list of some projects (
 [acxz/pokescript](https://github.com/acxz/pokescript),
-[talwat/pokeget](https://github.com/talwat/pokeget),
 [phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts))
 that also fill this role and what makes `pokeshell` unique among them.
 
-| **Feature**      | **pokeshell** | **pokescript** | **pokeget** | **colorscripts** |
-|:----------------:|:-------------:|:--------------:|:-----------:|:----------------:|
-| random           | ✔️            | ✔️               | ✔️           | ✔️                |
-| small            | ✔️            | ✔️               | ✔️           | ✔️                |
-| small forms      | ✔️            | ✔️               | ❌<sup>1</sup>| ✔️             |
-| big              | ✔️            | ❌              | ✔️           | ❌               |
-| shiny big        | ✔️            | ❌              | ❌<sup>2</sup>| ❌             |
-| big forms        | ✔️            | ❌              | ❌<sup>1</sup>| ❌             |
-| animated         | ✔️            | ❌              | ❌          | ❌               |
-| terminal fit     | ✔️            | ❌              | ❌          | ❌               |
-| genders          | ✔️            | ✔️               | ❌          | ❌               |
-| multiple pokemon | ✔️            | ✔️               | ❌          | ❌               |
-| tab completion   | ✔️            | ✔️               | ❌          | ❌               |
-| caching          | ✔️            | ✔️               | ❌<sup>2</sup>| ✔️              |
-| no internet      | ❌           | ✔️               | ❌          | ✔️                |
-| block size <sup>#</sup>      | ANSI | half        | full        | half             |
-| # dependencies <sup>-</sup>  | 5  | 1             | 2           | 1                |
-| default speed <sup>+</sup>   | 1x | 5.8x          | 0.7x        | 1.2x             |
-| cached speed <sup>+</sup>    | 1x | 5.8x          | 4.5x        | 1.2x             |
-| first run speed <sup>+</sup> | 1x | 16x           | 3x          | 3x               |
-
-<sup>1</sup>: Partial support
-
-<sup>2</sup>: Not by default
+| **Feature**      | **pokeshell** | **pokescript** | **colorscripts** |
+|:----------------:|:-------------:|:--------------:|:----------------:|
+| random           | ✔️             | ✔️              | ✔️                |
+| small            | ✔️             | ✔️              | ✔️                |
+| big              | ✔️             | ❌             | ❌               |
+| animated         | ✔️             | ❌             | ❌               |
+| terminal fit     | ✔️             | ❌             | ❌               |
+| genders          | ✔️             | ✔️              | ❌               |
+| multiple pokemon | ✔️             | ✔️              | ❌               |
+| tab completion   | ✔️             | ✔️              | ❌               |
+| no internet      | ❌            | ✔️              | ✔️                |
+| block size <sup>#</sup>      | ANSI | half        | half             |
+| # dependencies <sup>-</sup>  | 5  | 1             | 1                |
+| cached speed <sup>+</sup>    | 1x | 5.8x          | 1.2x             |
+| first run speed <sup>+</sup> | 1x | 16x           | 3x               |
 
 <sup>#</sup>: in order of resolution: ANSI > half > full
 
-<sup>-</sup>: pokeshell/pokeget use bash, colorscripts uses Python
+<sup>-</sup>: pokeshell uses bash, colorscripts uses Python
 
 <sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
-is faster, default speed corresponds to default settings of each script
+is faster
 
 ### Other Similar Projects
 - [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
