@@ -51,6 +51,30 @@ or if running from this directory:
 ![pokeshell2](https://user-images.githubusercontent.com/17132214/157558403-8b83eb3d-4e54-44af-b05e-e3cb9a0d1ab3.png)
 ![pokeshell3](https://user-images.githubusercontent.com/17132214/157558404-ca22357f-7d21-41b4-9cad-282c863205f5.png)
 
+## Integration
+
+### hyfetch
+[hyfetch](https://github.com/hykilpikonna/hyfetch) is an active fork of
+[neofetch](https://github.com/dylanaraps/neofetch). Most importantly, it
+has fixes for properly displaying ascii. The updated `neofetch` can be run
+with the [`neowofetch`](https://github.com/hykilpikonna/hyfetch#running-updated-original-neofetch)
+command and uses your existing `neofetch` config.
+
+To use `pokeshell` with `hyfetch` add the following to your `neofetch`
+config file: `~/.config/neofetch/config`:
+```
+image_source=$(POKESHELL_COMMAND)
+```
+where `POKESHELL_COMMAND` is what you would run in the terminal.
+
+For example, including the below in your `neofetch` config file
+```
+image_source=${pokeshell politoed)
+```
+and running `neowofetch` gives the following:
+
+![hyfetch-integration](https://user-images.githubusercontent.com/17132214/188514218-60248920-8361-4bc6-93cd-75accfafa04f.png)
+
 ## Sources
 A great amount of gratitude goes to the following projects, without which
 `pokeshell` would not be possible. Please star/support these sources!
