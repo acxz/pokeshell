@@ -7,6 +7,7 @@ INSTALL_DIR = /usr/local
 # Installation instructions
 install: check_dependencies
 	@echo "Installing..."
+	@echo "Installed "
 	sudo mkdir -pv $(INSTALL_DIR)
 	sudo cp -rv bin $(INSTALL_DIR)
 	sudo cp -rv share $(INSTALL_DIR)
@@ -15,8 +16,17 @@ install: check_dependencies
 # Uninstallation instructions
 uninstall:
 	@echo "Uninstalling..."
-	sudo rm -rf $(INSTALL_DIR)/bin
-	sudo rm -rf $(INSTALL_DIR)/share
+
+	@echo "Removing files"	 
+	sudo rm -rf $(INSTALL_DIR)/bin/pokeshell
+	@echo "Removing Complitions"
+	sudo rm -rf $(INSTALL_DIR)/share/bash-completion/completions/pokeshell
+
+	@echo "Removing directories"
+	sudo rmdir -v $(INSTALL_DIR)/bin
+	sudo rmdir -v $(INSTALL_DIR)/share/bash-completion/completions
+	sudo rmdir -v $(INSTALL_DIR)/share/bash-completion
+
 	@echo "Uninstallation complete."
 
 # Target to check dependencies
