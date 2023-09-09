@@ -15,21 +15,21 @@ Key features include:
 
 ## Installation
 
-You can install pokeshell system-wide with the `install.sh` script like so:
+You can install pokeshell system-wide with the `make install` command like so:
 ```bash
-sudo ./install.sh
+make install
 ```
 
 This will allow you to run `pokeshell` anywhere on your system as well as add
 shell completions.
 
-An uninstall script is also provided:
+An uninstalltion is also provided:
 ```bash
-sudo ./uninstall.sh
+make uninstall
 ```
 
 If you do not want to install then you can still run pokeshell anywhere
-by adding the following lines to your `~/.bashrc`.
+by just colning the repo and adding the path to repo to your $PATH variable by adding the following lines to your `~/.bashrc`.
 
 ```bash
 export PATH=/path/to/pokeshell:$PATH
@@ -38,7 +38,10 @@ export PATH=/path/to/pokeshell:$PATH
 ## Usage
 
 ```bash
-pokeshell --help
+
+pokeshell -a random s:pikachu-gmax"
+
+for more options $ pokeshell --help
 ```
 
 or if running from this directory:
