@@ -12,6 +12,9 @@ install: check_dependencies
 	sudo cp -rv bin $(INSTALL_DIR)
 	sudo cp -rv share $(INSTALL_DIR)
 	@echo "Installation complete."
+	@echo "updating your $PATH variable"
+	export PATH=$PATH:/usr/local/bin
+	@echo "DONE pokeshell is now installed"
 
 # Uninstallation instructions
 uninstall:
