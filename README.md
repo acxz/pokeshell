@@ -120,7 +120,7 @@ that also fill this role and what makes `pokeshell` unique among them.
 is faster
 
 ### Other Similar Projects
-- [ph04/pokemon-icat](https://github.com/ph04/pokemon-icat)
+- [aflaaq/pokemon-icat](https://github.com/aflaaq/pokemon-icat)
     Show Pokemon sprites in Kitty
 - [eramdam/pokemonshow](https://github.com/eramdam/pokemonshow)
     Show Pokemon sprites using JavaScript
