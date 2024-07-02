@@ -1,0 +1,607 @@
+#!/usr/bin/env bash
+
+# Function that prints out the help text
+_help() {
+    echo "pokeshell: Show Pokemon sprites in the terminal"
+
+    echo ""
+    echo "Usage: pokeshell [OPTION] POKEMON..."
+    printf "  %-20s\t%-54s\n" \
+        "-b, --big" "Display big sprites (default)" \
+        "-a, --animation" "Display animated sprites" \
+        "-s, --small" "Display small sprites" \
+        "-r, --remove-cache" "Remove cache directory" \
+        "-h, --help" "Print this help" \
+
+    echo ""
+    echo "Shiny: prepend \"s(hiny):\" to POKEMON"
+    echo "default: use shiny ratio of 1/8192"
+
+    echo ""
+
+    echo "Gender: append \"+m(ale)/+f(emale)\" to POKEMON"
+    echo "default: use gender ratio of pokemon"
+
+    echo ""
+
+    echo "Random: use \"random{,GEN,...}\" for POKEMON"
+    echo "can add comma separated list for random pokemon from specified gens"
+    echo "note: specifying a gender for random is a suggestion as"
+    echo "random pokemon may have gender restrictions"
+    echo ""
+
+    echo "Examples: pokeshell pikachu"
+    echo "          pokeshell s:nidoran-f+f nidoran-m"
+    echo "          pokeshell -s s:bulbasaur+m ns:pikachu+f venusaur"
+    echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
+    echo "          pokeshell -a random s:pikachu-gmax"
+    echo "          pokeshell random,1,3+f s:random,4,1"
+    echo "          pokeshell type-null farfetchd sirfetchd"
+}
+
+
+# Handling command line arguments
+case "$#" in
+    0)
+        # display help if no arguments are given
+        _help
+        exit
+        ;;
+    *)
+        scale=0
+        pixel_perfect=1
+        use_small=0
+        use_ani=0
+        cache=1
+        cache_dir="$HOME/.cache/pokeshell"
+        start_idx=1
+        flagged=0
+        true_gender=0
+
+        if [ "$1" == '-r' ] || [ "$1" == '--remove-cache' ]; then
+            rm -r -v "$cache_dir"
+            exit
+        elif [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
+            use_small=1
+            start_idx=2
+            flagged=1
+        elif [ "$1" == '-a' ] || [ "$1" == '--animation' ]; then
+            use_ani=1
+            start_idx=2
+            flagged=1
+        elif [ "$1" == '-b' ] || [ "$1" == '--big' ]; then
+            start_idx=2
+            flagged=1
+        elif [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+            _help
+            exit
+        fi
+
+        if [ $# == 1 ] && [ $flagged == 1 ]; then
+            _help
+            echo ""
+            echo "You forgot to mention any Pokemon! See help."
+            exit
+        fi
+
+        # Parse description
+        images=()
+        for desc in "${@:$start_idx}"; do
+            # Parse for shiny
+            IFS=':' read -ra desc_arr <<< "$desc"
+            if [ ${#desc_arr[@]} == 1 ]; then
+                pokemon=${desc_arr[0]}
+                shiny_str=''
+            else
+                shiny_str=${desc_arr[0]}
+                pokemon=${desc_arr[1]}
+            fi
+
+            # Parse for gender
+            IFS='+' read -ra desc_arr <<< "$pokemon"
+            if [ ${#desc_arr[@]} == 1 ]; then
+                pokemon=${desc_arr[0]}
+                gender_str=''
+            else
+                pokemon=${desc_arr[0]}
+                gender_str=${desc_arr[1]}
+            fi
+
+            if [ -z "$shiny_str" ]; then
+                # Random shiny chance
+                shiny_str='not-shiny'
+                shiny_rate=8192
+                shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
+                if [ "$shiny_chance" = "$shiny_rate" ]; then
+                    shiny_str='shiny'
+                fi
+            fi
+
+            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
+                _type=shiny
+            elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
+                _type=not-shiny
+            else
+                _help
+                echo ""
+                echo "Incorrect shiny specifier! See help."
+                exit
+            fi
+
+            # Parse for random
+            # Delimit pokemon on comma to see if we are using random gens
+            is_random=0
+            IFS=',' read -ra pokemon_random_arr <<< "$pokemon"
+            pokemon=${pokemon_random_arr[0]}
+
+            if [ "$pokemon" = 'random' ]; then
+                is_random=1
+                gen_ids=(1 152 251 387 494 650 722 810 898)
+                gen_start=0
+                gen_end=8
+
+                # Delimit pokemon on comma to see if we are using random gens
+                if [ ${#pokemon_random_arr[@]} != 1 ]; then
+                    use_random_gen=1
+                    for (( _idx=1; _idx<${#pokemon_random_arr[@]}; _idx++ )); do
+                        gens+=("${pokemon_random_arr[_idx]}")
+                    done
+
+                    # Pick random gen
+                    random_gen=$(shuf -e "${gens[@]}" -n 1)
+                    gen_end=${random_gen}
+                    gen_start=$((gen_end-1))
+                fi
+
+                # Choose random pokemon id
+                pokemon_id=$(shuf -i "${gen_ids[gen_start]}"-"${gen_ids[gen_end]}" -n 1)
+                pokemon=$(curl -s \
+                    "https://pokeapi.co/api/v2/pokemon/$pokemon_id" | \
+                    jq -r '.species.name')
+
+                # TODO
+                # Check to see if the pokemon has forms and if so random off that
+                # upstream issue, pokeapi should list forms on pokemon_species
+                # POST
+
+                # But wait there is more
+                # If random let's figure out which form to use
+                # TODO
+            fi
+
+            # meowstic is weird in pokeapi (upstream issue?)
+            # male shiny is actually female shiny?
+            if [ "$pokemon" == 'meowstic' ]; then
+                pokemon=meowstic-male
+            fi
+
+            gender_rate=4
+            if [ $true_gender == 1 ]; then
+                # Check if pokemon exists! If not use unown-? lol
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://pokeapi.co/api/v2/pokemon/$pokemon")
+                if [ "$http_code" == '404' ]; then
+                    # Could be a pokemon form
+                    # Note forms are generally inconsistant in terms of if default
+                    # pokemon species displays a form or doesn't.
+                    # See shellos vs unown for example
+                    is_form=1
+                    http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                        "https://pokeapi.co/api/v2/pokemon-form/$pokemon")
+                    if [ "$http_code" == '404' ]; then
+                        # Okay now it probably doesn't exist
+                        echo "$pokemon is unown ?"
+                        pokemon='unown-question'
+                    fi
+
+                    # TODO giratina is weird as well between pokeapi and pokesprite
+                    # and probably other forms as well
+                fi
+
+                if [ "$is_form" == '1' ]; then
+                    pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon-form/$pokemon | \
+                        jq -r '.pokemon.name')
+                else
+                    pokemon_species=$(curl -s https://pokeapi.co/api/v2/pokemon/$pokemon | \
+                        jq -r '.species.name')
+                fi
+
+                # Ensure proper gender is used (if a pokemon cannot be male or cannot
+                # be female that is enforced)
+                gender_rate=$(curl -s "https://pokeapi.co/api/v2/pokemon-species/$pokemon_species" | \
+                    jq -r '.gender_rate')
+            fi
+
+            # meowstic is weird in pokeapi (upstream issue?)
+            # convert meowstic-male back to meowstic for the other backends
+            if [ $pokemon == 'meowstic-male' ]; then
+                pokemon=meowstic
+                gender_rate=4
+            fi
+
+            if [ -z "$gender_str" ]; then
+
+                # Random gender chance based on pokemon gender ratio
+                if [ "$gender_rate" = '-1' ]; then
+                    gender_str='genderless'
+                else
+                    gender_div=8
+                    gender_chance=$(shuf -i 1-"$gender_div" -n 1)
+                    if [[ $gender_chance -le $gender_rate ]]; then
+                        gender_str='female'
+                    else
+                        gender_str='male'
+                    fi
+                fi
+            fi
+
+            if [ $gender_str = 'male' ] || [ $gender_str = 'm' ]; then
+                if [ "$gender_rate" = '8' ]; then
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon must be female!"
+                        echo ""
+                        exit
+                    else
+                        gender=female
+                    fi
+                elif [ "$gender_rate" = '-1' ]; then
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon has no gender!"
+                        echo ""
+                        exit
+                    else
+                        gender=male
+                    fi
+                else
+                    gender=male
+                fi
+            elif [ $gender_str = 'female' ] || [ $gender_str = 'f' ]; then
+                if [ $gender_rate = '0' ]; then
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon must be male!"
+                        echo ""
+                        exit
+                    else
+                        gender=male
+                    fi
+                elif [ $gender_rate = '-1' ]; then
+                    if [ $is_random = 0 ]; then
+                        echo "$pokemon has no gender!"
+                        echo ""
+                        exit
+                    else
+                        # use default gender of male
+                        gender=male
+                    fi
+                else
+                    gender=female
+                fi
+            elif [ $gender_str = 'genderless' ]; then
+                if [ $gender_rate != '-1' ]; then
+                    echo "$pokemon_species cannot be genderless!"
+                    echo ""
+                    exit
+                else
+                    # use default gender of male
+                    gender=male
+                fi
+            else
+                _help
+                echo ""
+                echo "Incorrect gender specifier! See help."
+                exit
+            fi
+
+            # Create full pokemon description for filename/caching
+            cache_dir="$HOME/.cache/pokeshell"
+            mkdir -p "$cache_dir"
+            desc_full="${_type}:$pokemon+${gender}"
+            if [ "$is_random" == 1 ]; then
+                echo "$desc_full"
+            fi
+
+            # Check if image is cached
+            is_cached=0
+            if [ $use_small == 1 ]; then
+                possible_cached_pokemon="$cache_dir/$desc_full-small.png"
+            elif [ $use_ani == 1 ]; then
+                possible_cached_pokemon="$cache_dir/$desc_full.gif"
+            else
+                possible_cached_pokemon="$cache_dir/$desc_full-big.png"
+            fi
+
+            if [ -f "$possible_cached_pokemon" ]; then
+                is_cached=1
+                image=${possible_cached_pokemon}
+            fi
+
+            # curl images
+            if [ $use_small == 1 ] && [ "$is_cached" == 0 ]; then
+                # default type of small sprites is "regular"
+                if [ $_type = 'not-shiny' ]; then
+                    _type=regular
+                fi
+                if [ $gender = 'male' ]; then
+                    gender=''
+                fi
+
+                if [ $pokemon = 'nidoran-f' ]; then
+                    gender=''
+                fi
+
+                # Only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # if not revert to male (i.e. gender='')
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png")
+                if [ "$http_code" == '404' ]; then
+                    gender=''
+                fi
+
+                image="$cache_dir/$desc_full-small.png"
+                curl -sL \
+                    "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/$_type/$gender/$pokemon.png" \
+                    -o "$image"
+            elif [ $use_ani == 1 ] && [ "$is_cached" == 0 ]; then
+                # default type of ani sprites is "normal"
+                if [ $_type = 'not-shiny' ]; then
+                    _type=normal
+                fi
+
+                if [ "$gender" = 'female' ] && [ "$pokemon" != 'nidoran-f' ]; then
+                    gender='-f'
+                else
+                    gender=''
+                fi
+
+                # Only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # if not revert to male (i.e. gender='')
+                http_code=$(curl -s -o /dev/null -I -w "%{http_code}" \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif")
+                if [ "$http_code" == '404' ]; then
+                    gender=''
+                fi
+
+                # ani sprites unique naming search and replace
+                # nidoran-f/m => nidoran_f/m
+                pokemon=${pokemon/nidoran-f/nidoran_f}
+                pokemon=${pokemon/nidoran-m/nidoran_m}
+                # type-null => typenull
+                pokemon=${pokemon/type-null/typenull}
+                # mega-{x/y} => mega{x/y}
+                pokemon=${pokemon/mega-/mega}
+                # gmax => gigantamax
+                pokemon=${pokemon/gmax/gigantamax}
+
+                image="$cache_dir/$desc_full.gif"
+                curl -sL \
+                    "https://projectpokemon.org/images/$_type-sprite/$pokemon$gender.gif" \
+                    -o "$image"
+            elif [ ${is_cached} == 0 ]; then
+                # default type of big sprites is "default"
+                if [ "$_type" = 'not-shiny' ] && [ "$gender" != 'female' ]; then
+                    _desc=default
+                elif [ "$_type" = 'not-shiny' ] && [ "$gender" == 'female' ]; then
+                    _desc=female
+                    _fallback=default
+                elif [ "$_type" = 'shiny' ] && [ "$gender" != 'female' ]; then
+                    _desc=shiny
+                else
+                    _desc=shiny_female
+                    _fallback=shiny
+                fi
+
+                # meowstic is weird in pokeapi (upstream issue?)
+                # male shiny is actually female shiny?
+                if [ $pokemon == 'meowstic' ]; then
+                    pokemon=meowstic-male
+                fi
+
+                json_field=".sprites.front_${_desc}"
+
+                url=$(curl -s "https://pokeapi.co/api/v2/pokemon-form/$pokemon" | \
+                    jq -r $json_field)
+
+                if [ "$url" == 'null' ]; then
+                    url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
+                        jq -r $json_field)
+                    if [ "$url" == '' ]; then
+                        url="null"
+                    fi
+                fi
+
+                # Only limited number is exclusively female,
+                # thus need to do a check to see if female exists
+                # if not revert to male (i.e. gender='')
+                # note for female only pokemon, pokeapi uses male classifier
+                if [ "$url" == 'null' ]; then
+                    _desc=$_fallback
+                    json_field=".sprites.front_${_desc}"
+                    url=$(curl -s "https://pokeapi.co/api/v2/pokemon-form/$pokemon" | \
+                        jq -r $json_field)
+                    if [ "$url" == 'null' ]; then
+                        url=$(curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" | \
+                            jq -r $json_field)
+                    fi
+                fi
+                image="$cache_dir/$desc_full-big.png"
+                curl -sL "$url" -o "$image"
+            fi
+            images+=("${image}")
+        done
+        ;;
+esac
+
+# Stitch images and display
+if [ $use_ani == 0 ]; then
+    for _i in "${images[@]}"; do
+        # Ground images (for centered images)
+        magick "$_i" -trim "$_i"
+    done
+
+    if [ ${#images[@]} != 1 ]; then
+        if [ $scale == 1 ]; then
+            # Get scale height to resize all images to
+            max_height=2160
+            for _i in "${images[@]}"; do
+                # Get size
+                width_height=$(identify "${_i}" | cut -f3 -d " ")
+                height=$(echo "$width_height" | cut -f2 -d "x")
+                (( height > max_height )) && max_height=${height}
+            done
+
+            # Only scale up to terminal height
+            terminal_height=2160
+            scale_height=$max_height
+            (( max_height > terminal_height )) && scale_height=$terminal_height
+
+            for _i in "${images[@]}"; do
+                # Scale
+                magick "$_i" -scale x"${scale_height}" "${_i}s"
+            done
+
+            # Stitch them
+            magick "${images[@]/%/s}" +append "$cache_dir/t.png"
+        else
+            # Stitch them
+            magick -background 'rgba(0, 0, 0, 0' "${images[@]}" -gravity South +append "$cache_dir/t.png"
+        fi
+        display_file="$cache_dir/t.png"
+    else
+        display_file="${images[0]}"
+    fi
+
+    # display
+    if [ $pixel_perfect == 1 ]; then
+        # pre scale for pixel perfect chafa
+        chafa -w 1 --symbols all --scale 8 "${display_file}"
+    else
+        chafa --symbols all "$display_file"
+    fi
+
+    # cleanup
+    for _i in "${images[@]}"; do
+        if [ "$cache" == 0 ]; then
+            rm -f "${_i}"
+        fi
+        rm -f "${_i}s"
+        rm -f "${_i}p"
+    done
+    rm -f "$cache_dir/t.png"
+else
+    if [ ${#images[@]} != 1 ]; then
+        if [ $scale == 1 ]; then
+            # Get scale height to resize all images to
+            max_height=2160
+            for _i in "${images[@]}"; do
+                # Get size
+                width_height=$(identify "${_i}" | grep "\[0\]" | cut -f3 -d " ")
+                height=$(echo "$width_height" | cut -f2 -d "x")
+                (( height > max_height )) && max_height=${height}
+            done
+
+            # Only scale up to terminal height
+            terminal_height=2160
+            scale_height=$max_height
+            (( max_height > terminal_height )) && scale_height=$terminal_height
+
+            for _i in "${images[@]}"; do
+                # Scale
+                magick "${_i}" -scale x"${scale_height}" "${_i}s"
+            done
+        else
+            for _i in "${images[@]}"; do
+                # Create tmp file to modify
+                cp "${_i}" "${_i}s"
+            done
+        fi
+
+        width=0
+        min_frame=100
+        sum_widths=("0")
+
+        for _i in "${images[@]}"; do
+            # Get size
+            width_height=$(identify "${_i}s" | grep "\[0\]" | cut -f3 -d " ")
+            width=$(echo "$width_height" | cut -f1 -d "x")
+            height=$(echo "$width_height" | cut -f2 -d "x")
+
+            sum_width=$((sum_width + width))
+            sum_widths+=("${sum_width}")
+
+            heights+=("${height}")
+            (( height > max_height )) && max_height=${height}
+
+            frame=$(identify "${_i}s" | wc -l)
+            frames+=("${frame}")
+            (( frame < min_frame )) && min_frame=${frame}
+        done
+
+        specified_frame=$min_frame
+
+        # Correct gravity for first image
+        magick "${images[0]/%/s}" \
+            -repage "${sum_widths[1]}x${max_height}+0+$((max_height - heights[0]))" \
+            "${images[0]/%/s}"
+
+        coalesce_str="magick ${images[0]/%/s}"
+
+        for _loop_num in "${!images[@]}"; do
+            frame=${frames[_loop_num]}
+
+            if [ "$frame" -gt "$specified_frame" ]; then
+                # Delete extra frames from gif
+                extra_frames=$(( frame - specified_frame ))
+                extra_idx_del_str=""
+
+                for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
+                    idx=$(( _extra_num * frame / extra_frames ))
+                    extra_idx_del_str="$extra_idx_del_str$idx,"
+                done
+
+                magick "${images[_loop_num]/%/s}" -delete "$extra_idx_del_str" "${images[_loop_num]/%/s}"
+            else
+                # Insert extra frames into gif
+                extra_frames=$(( specified_frame - frame ))
+
+                for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
+                    idx=$(( _extra_num * frame / extra_frames + _extra_num ))
+                    magick "${images[_loop_num]/%/s}" "${images[_loop_num]/%/s}[$idx]" -insert $idx "${images[_loop_num]/%/s}"
+                done
+            fi
+
+            if [[ ${_loop_num} -gt 0 ]]; then
+                coalesce_str="${coalesce_str} \
+                    -repage ${sum_widths[${#sum_widths[@]}-1]}x${max_height} -coalesce \
+                    null: \( ${images[_loop_num]/%/s} -coalesce \) \
+                    -geometry +${sum_widths[_loop_num]}+$((max_height - heights[_loop_num])) \
+                    -layers Composite \
+                "
+            fi
+        done
+
+        display_file="$cache_dir/t.gif"
+
+        coalesce_str="${coalesce_str} $display_file"
+        eval "$coalesce_str"
+
+        # Cleanup
+        for _i in "${images[@]}"; do
+            if [ "$cache" == 0 ]; then
+                rm -f "${_i}"
+            fi
+            rm -f "${_i}s"
+        done
+
+        trap ctrl_c INT
+        function  ctrl_c() {
+            rm -f "$display_file"
+        }
+    else
+        display_file="${images[0]}"
+    fi
+
+    # Display
+    chafa --format symbols --symbols all "$display_file"
+fi
