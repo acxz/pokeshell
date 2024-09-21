@@ -437,7 +437,7 @@ esac
 if [ $use_ani == 0 ]; then
     for _i in "${images[@]}"; do
         # Ground images (for centered images)
-        convert "$_i" -trim "$_i"
+        magick "$_i" -trim "$_i"
     done
 
     if [ ${#images[@]} != 1 ]; then
@@ -458,14 +458,14 @@ if [ $use_ani == 0 ]; then
 
             for _i in "${images[@]}"; do
                 # Scale
-                convert "$_i" -scale x"${scale_height}" "${_i}s"
+                magick "$_i" -scale x"${scale_height}" "${_i}s"
             done
 
             # Stitch them
-            convert "${images[@]/%/s}" +append "$cache_dir/t.png"
+            magick "${images[@]/%/s}" +append "$cache_dir/t.png"
         else
             # Stitch them
-            convert -background 'rgba(0, 0, 0, 0' "${images[@]}" -gravity South +append "$cache_dir/t.png"
+            magick -background 'rgba(0, 0, 0, 0' "${images[@]}" -gravity South +append "$cache_dir/t.png"
         fi
         display_file="$cache_dir/t.png"
     else
@@ -508,7 +508,7 @@ else
 
             for _i in "${images[@]}"; do
                 # Scale
-                convert "${_i}" -scale x"${scale_height}" "${_i}s"
+                magick "${_i}" -scale x"${scale_height}" "${_i}s"
             done
         else
             for _i in "${images[@]}"; do
@@ -541,11 +541,11 @@ else
         specified_frame=$min_frame
 
         # Correct gravity for first image
-        convert "${images[0]/%/s}" \
+        magick "${images[0]/%/s}" \
             -repage "${sum_widths[1]}x${max_height}+0+$((max_height - heights[0]))" \
             "${images[0]/%/s}"
 
-        coalesce_str="convert ${images[0]/%/s}"
+        coalesce_str="magick ${images[0]/%/s}"
 
         for _loop_num in "${!images[@]}"; do
             frame=${frames[_loop_num]}
@@ -560,14 +560,14 @@ else
                     extra_idx_del_str="$extra_idx_del_str$idx,"
                 done
 
-                convert "${images[_loop_num]/%/s}" -delete "$extra_idx_del_str" "${images[_loop_num]/%/s}"
+                magick "${images[_loop_num]/%/s}" -delete "$extra_idx_del_str" "${images[_loop_num]/%/s}"
             else
                 # Insert extra frames into gif
                 extra_frames=$(( specified_frame - frame ))
 
                 for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
                     idx=$(( _extra_num * frame / extra_frames + _extra_num ))
-                    convert "${images[_loop_num]/%/s}" "${images[_loop_num]/%/s}[$idx]" -insert $idx "${images[_loop_num]/%/s}"
+                    magick "${images[_loop_num]/%/s}" "${images[_loop_num]/%/s}[$idx]" -insert $idx "${images[_loop_num]/%/s}"
                 done
             fi
 
