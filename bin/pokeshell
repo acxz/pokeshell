@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# import imageshell functions
+# https://stackoverflow.com/q/192292
+MY_DIR=$(dirname $(readlink -f $0))
+source $MY_DIR/../lib/imageshell.sh
+
 # Function that prints out the help text
 _help() {
     echo "pokeshell: Show Pokemon sprites in the terminal"
@@ -39,7 +44,6 @@ _help() {
     echo "          pokeshell type-null farfetchd sirfetchd"
 }
 
-
 # Handling command line arguments
 case "$#" in
     0)
@@ -48,8 +52,6 @@ case "$#" in
         exit
         ;;
     *)
-        scale=0
-        pixel_perfect=1
         use_small=0
         use_ani=0
         cache=1
@@ -433,175 +435,5 @@ case "$#" in
         ;;
 esac
 
-# Stitch images and display
-if [ $use_ani == 0 ]; then
-    for _i in "${images[@]}"; do
-        # Ground images (for centered images)
-        magick "$_i" -trim "$_i"
-    done
-
-    if [ ${#images[@]} != 1 ]; then
-        if [ $scale == 1 ]; then
-            # Get scale height to resize all images to
-            max_height=2160
-            for _i in "${images[@]}"; do
-                # Get size
-                width_height=$(identify "${_i}" | cut -f3 -d " ")
-                height=$(echo "$width_height" | cut -f2 -d "x")
-                (( height > max_height )) && max_height=${height}
-            done
-
-            # Only scale up to terminal height
-            terminal_height=2160
-            scale_height=$max_height
-            (( max_height > terminal_height )) && scale_height=$terminal_height
-
-            for _i in "${images[@]}"; do
-                # Scale
-                magick "$_i" -scale x"${scale_height}" "${_i}s"
-            done
-
-            # Stitch them
-            magick "${images[@]/%/s}" +append "$cache_dir/t.png"
-        else
-            # Stitch them
-            magick -background 'rgba(0, 0, 0, 0' "${images[@]}" -gravity South +append "$cache_dir/t.png"
-        fi
-        display_file="$cache_dir/t.png"
-    else
-        display_file="${images[0]}"
-    fi
-
-    # display
-    if [ $pixel_perfect == 1 ]; then
-        # pre scale for pixel perfect chafa
-        chafa -w 1 --symbols all --scale 8 "${display_file}"
-    else
-        chafa --symbols all "$display_file"
-    fi
-
-    # cleanup
-    for _i in "${images[@]}"; do
-        if [ "$cache" == 0 ]; then
-            rm -f "${_i}"
-        fi
-        rm -f "${_i}s"
-        rm -f "${_i}p"
-    done
-    rm -f "$cache_dir/t.png"
-else
-    if [ ${#images[@]} != 1 ]; then
-        if [ $scale == 1 ]; then
-            # Get scale height to resize all images to
-            max_height=2160
-            for _i in "${images[@]}"; do
-                # Get size
-                width_height=$(identify "${_i}" | grep "\[0\]" | cut -f3 -d " ")
-                height=$(echo "$width_height" | cut -f2 -d "x")
-                (( height > max_height )) && max_height=${height}
-            done
-
-            # Only scale up to terminal height
-            terminal_height=2160
-            scale_height=$max_height
-            (( max_height > terminal_height )) && scale_height=$terminal_height
-
-            for _i in "${images[@]}"; do
-                # Scale
-                magick "${_i}" -scale x"${scale_height}" "${_i}s"
-            done
-        else
-            for _i in "${images[@]}"; do
-                # Create tmp file to modify
-                cp "${_i}" "${_i}s"
-            done
-        fi
-
-        width=0
-        min_frame=100
-        sum_widths=("0")
-
-        for _i in "${images[@]}"; do
-            # Get size
-            width_height=$(identify "${_i}s" | grep "\[0\]" | cut -f3 -d " ")
-            width=$(echo "$width_height" | cut -f1 -d "x")
-            height=$(echo "$width_height" | cut -f2 -d "x")
-
-            sum_width=$((sum_width + width))
-            sum_widths+=("${sum_width}")
-
-            heights+=("${height}")
-            (( height > max_height )) && max_height=${height}
-
-            frame=$(identify "${_i}s" | wc -l)
-            frames+=("${frame}")
-            (( frame < min_frame )) && min_frame=${frame}
-        done
-
-        specified_frame=$min_frame
-
-        # Correct gravity for first image
-        magick "${images[0]/%/s}" \
-            -repage "${sum_widths[1]}x${max_height}+0+$((max_height - heights[0]))" \
-            "${images[0]/%/s}"
-
-        coalesce_str="magick ${images[0]/%/s}"
-
-        for _loop_num in "${!images[@]}"; do
-            frame=${frames[_loop_num]}
-
-            if [ "$frame" -gt "$specified_frame" ]; then
-                # Delete extra frames from gif
-                extra_frames=$(( frame - specified_frame ))
-                extra_idx_del_str=""
-
-                for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
-                    idx=$(( _extra_num * frame / extra_frames ))
-                    extra_idx_del_str="$extra_idx_del_str$idx,"
-                done
-
-                magick "${images[_loop_num]/%/s}" -delete "$extra_idx_del_str" "${images[_loop_num]/%/s}"
-            else
-                # Insert extra frames into gif
-                extra_frames=$(( specified_frame - frame ))
-
-                for (( _extra_num=0; _extra_num<extra_frames; _extra_num++ )); do
-                    idx=$(( _extra_num * frame / extra_frames + _extra_num ))
-                    magick "${images[_loop_num]/%/s}" "${images[_loop_num]/%/s}[$idx]" -insert $idx "${images[_loop_num]/%/s}"
-                done
-            fi
-
-            if [[ ${_loop_num} -gt 0 ]]; then
-                coalesce_str="${coalesce_str} \
-                    -repage ${sum_widths[${#sum_widths[@]}-1]}x${max_height} -coalesce \
-                    null: \( ${images[_loop_num]/%/s} -coalesce \) \
-                    -geometry +${sum_widths[_loop_num]}+$((max_height - heights[_loop_num])) \
-                    -layers Composite \
-                "
-            fi
-        done
-
-        display_file="$cache_dir/t.gif"
-
-        coalesce_str="${coalesce_str} $display_file"
-        eval "$coalesce_str"
-
-        # Cleanup
-        for _i in "${images[@]}"; do
-            if [ "$cache" == 0 ]; then
-                rm -f "${_i}"
-            fi
-            rm -f "${_i}s"
-        done
-
-        trap ctrl_c INT
-        function  ctrl_c() {
-            rm -f "$display_file"
-        }
-    else
-        display_file="${images[0]}"
-    fi
-
-    # Display
-    chafa --format symbols --symbols all "$display_file"
-fi
+scale=0
+_display images $use_ani $scale $cache "$cache_dir"
