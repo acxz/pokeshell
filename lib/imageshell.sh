@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# functions to display and stitch animated and static images
+
+# example usage:
+# https://github.com/acxz/pokeshell
+# https://github.com/acxz/waifushell
+# https://github.com/acxz/wallshell
+
 # bash tips
 # functions in bash
 # https://stackoverflow.com/a/23585994
@@ -56,9 +63,11 @@ function stitch_images () {
 
 function display_images () {
     local display_file
-    display_file=${1:?}
+    local pixel_perfect
 
-    pixel_perfect=1
+    display_file=${1:?}
+    pixel_perfect=${2:?}
+
     if [ $pixel_perfect == 1 ]; then
         # pre scale for pixel perfect chafa
         chafa -w 1 --symbols all --scale 8 "${display_file}"
@@ -220,19 +229,21 @@ function _display () {
     local -n __images
     local use_ani
     local scale
+    local pixel_perfect
     local cache
     local cache_dir
 
     __images=${1:?}
     use_ani=${2:?}
     scale=${3:?}
-    cache=${4:?}
-    cache_dir=${5:?}
+    pixel_perfect=${4:?}
+    cache=${5:?}
+    cache_dir=${6:?}
 
     # Stitch images and display
     if [ $use_ani == 0 ]; then
         stitch_images __images $scale $cache_dir
-        display_images "$display_file"
+        display_images "$display_file" $pixel_perfect
 	cleanup_images __images $cache $cache_dir
     else
 	stitch_ani_images __images $scale $cache $cache_dir
