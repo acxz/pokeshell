@@ -15,18 +15,33 @@ Key features include:
 
 ## Installation
 
-You can install pokeshell system-wide with the `install.sh` script like so:
+You can install/uninstall pokeshell using [`just`](https://github.com/casey/just).
+
+By default the install directory is `/usr/local/`, which will allow you to run `pokeshell`
+anywhere on your system as well as add shell completions.
+
+You can also specify the install directory, but you'll have to make sure that directory is on your `$PATH`
+if you want to run `pokeshell` from anywhere.
+
 ```bash
-sudo ./install.sh
+# install
+just install [<install_dir>]
+
+# uninstall
+just uninstall [<install_dir>]
 ```
 
-This will allow you to run `pokeshell` anywhere on your system as well as add
-shell completions.
+If you don't have `just` or don't want to use it, you can directly use the `install.sh` and `uninstall.sh` scripts.
 
-An uninstall script is also provided:
 ```bash
-sudo ./uninstall.sh
+# install
+./install.sh [install_dir]
+
+# uninstall
+./uninstall.sh [install_dir]
 ```
+
+Remember to prepend the install/uninstall command with `sudo` if you need to.
 
 If you do not want to install then you can still run pokeshell anywhere
 by adding the following lines to your `~/.bashrc`.
