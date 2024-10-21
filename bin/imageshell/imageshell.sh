@@ -48,7 +48,9 @@ function imgshl_stitch_images () {
             magick "${_images[@]}" -scale x"${scale_height}" +append "$cache_dir/t.tiff"
         else
             # Stitch them
-            magick -background 'rgba(0, 0, 0, 0' "${_images[@]}" -gravity South +append "$cache_dir/t.tiff"
+            # PNG: hack for pokeshell, because chafa doesn't like pokeshell tiff images
+            # at small image sizes png vs tiff doesn't cause any noticeable slowdown anyway
+            magick -background 'rgba(0, 0, 0, 0' "${_images[@]}" -gravity South +append PNG:"$cache_dir/t.tiff"
         fi
         display_file="$cache_dir/t.tiff"
     else
