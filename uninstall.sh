@@ -1,10 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-rm -v /usr/local/bin/pokeshell
-rm -v /usr/local/lib/imageshell.sh
-rm -v /usr/local/share/bash-completion/completions/pokeshell
+install_dir="/usr/local/"
 
-rmdir -v /usr/local/bin
-rmdir -v /usr/local/lib
-rmdir -v /usr/local/share/bash-completion/completions
-rmdir -v /usr/local/share/bash-completion
+rm -v "${1:-${install_dir}}bin/pokeshell"
+rm -rv "${1:-${install_dir}}bin/imageshell"
+rm -v "${1:-${install_dir}}share/bash-completion/completions/pokeshell"
+
+rmdir -v "${1:-${install_dir}}bin"
+rmdir -v "${1:-${install_dir}}share/bash-completion/completions"
+rmdir -v "${1:-${install_dir}}share/bash-completion"

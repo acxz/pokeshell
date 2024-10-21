@@ -1,6 +1,7 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-mkdir -pv /usr/local
-cp -rv bin /usr/local
-cp -rv share /usr/local
-cp -rv lib /usr/local
+install_dir="/usr/local/"
+
+mkdir -pv "${1:-${install_dir}}"
+cp -rv bin "${1:-${install_dir}}"
+cp -rv share "${1:-${install_dir}}"
