@@ -49,6 +49,8 @@ function imgshl_stitch_images () {
         fi
         display_file="$cache_dir/t.tiff"
     else
+        # Trim image
+        magick "${_images[0]}" -trim "${_images[0]}"
         display_file="${_images[0]}"
     fi
 }
