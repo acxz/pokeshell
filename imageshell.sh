@@ -17,13 +17,20 @@
 function imgshl_stitch_images () {
     local -n _images
     local scale
+    local trim
     local cache_dir
 
     _images=${1:?}
     scale=${2:?}
-    cache_dir=${3:?}
+    trim=${3:?}
+    cache_dir=${4:?}
 
     if [ ${#_images[@]} != 1 ]; then
+
+        # Specify file to be displayed
+        # tiff is faster than png to create and higher quality than jpg
+        display_file="$cache_dir/t.tiff"
+
         if [ $scale == 1 ]; then
             # Get scale height to resize all images to
             max_height=2160
@@ -39,18 +46,34 @@ function imgshl_stitch_images () {
             scale_height=$max_height
             (( max_height > terminal_height )) && scale_height=$terminal_height
 
-            # Trim, scale, and stitch them
-            magick "${_images[@]}" -trim -scale x"${scale_height}" +append "$cache_dir/t.tiff"
+            if [ $trim == 1 ]; then
+                # Trim, scale, and stitch
+                magick "${_images[@]}" -trim -scale x"${scale_height}" +append "${display_file}"
+            else
+                # Scale and stitch
+                magick "${_images[@]}" -scale x"${scale_height}" +append "${display_file}"
+            fi
+
         else
-            # Trim and stitch them
-            # PNG: hack for pokeshell, because chafa doesn't like pokeshell tiff images
-            # at small image sizes png vs tiff doesn't cause any noticeable slowdown anyway
-            magick -background 'rgba(0, 0, 0, 0' "${_images[@]}" -trim -gravity South +append PNG:"$cache_dir/t.tiff"
+            # Stitch
+            if [ $trim == 1 ]; then
+                # Specify file to be displayed as png
+                # hack for pokeshell, because chafa doesn't like pokeshell tiff images
+                # at small image sizes png vs tiff doesn't cause any noticeable slowdown anyway
+                display_file="$cache_dir/t.png"
+
+                # Trim, scale, and stitch
+                magick -background 'rgba(0, 0, 0, 0' "${_images[@]}" -trim -gravity South +append "${display_file}"
+            else
+                # Scale and stitch
+                magick -background 'rgba(0, 0, 0, 0' "${_images[@]}" -gravity South +append "${display_file}"
+            fi
         fi
-        display_file="$cache_dir/t.tiff"
     else
-        # Trim image
-        magick "${_images[0]}" -trim "${_images[0]}"
+        if [ $trim == 1 ]; then
+            magick "${_images[0]}" -trim "${_images[0]}"
+        fi
+
         display_file="${_images[0]}"
     fi
 }
@@ -221,6 +244,7 @@ function imgshl_display () {
     local -n __images
     local use_ani
     local scale
+    local trim
     local pixel_perfect
     local cache
     local cache_dir
@@ -228,13 +252,14 @@ function imgshl_display () {
     __images=${1:?}
     use_ani=${2:?}
     scale=${3:?}
-    pixel_perfect=${4:?}
-    cache=${5:?}
-    cache_dir=${6:?}
+    trim=${4:?}
+    pixel_perfect=${5:?}
+    cache=${6:?}
+    cache_dir=${7:?}
 
     # Stitch images and display
     if [ $use_ani == 0 ]; then
-        imgshl_stitch_images __images $scale $cache_dir
+        imgshl_stitch_images __images $scale $trim $cache_dir
         imgshl_display_image "$display_file" $pixel_perfect
         imgshl_cleanup __images $cache $cache_dir
     else
