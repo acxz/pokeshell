@@ -49,11 +49,13 @@ function imgshl_stitch_images () {
         fi
         display_file="$cache_dir/t.tiff"
     else
+        # Trim image
+        magick "${_images[0]}" -trim "${_images[0]}"
         display_file="${_images[0]}"
     fi
 }
 
-function imgshl_display_images () {
+function imgshl_display_image () {
     local display_file
     local pixel_perfect
 
@@ -68,7 +70,7 @@ function imgshl_display_images () {
     fi
 }
 
-function imgshl_cleanup_images () {
+function imgshl_cleanup () {
     local -n _images
     local cache
     local cache_dir
@@ -209,7 +211,7 @@ function imgshl_stitch_ani_images () {
     fi
 }
 
-function imgshl_display_ani_images () {
+function imgshl_display_ani_image () {
     local display_file
     display_file="${1:?}"
     chafa --format symbols --symbols all "$display_file"
@@ -233,10 +235,10 @@ function imgshl_display () {
     # Stitch images and display
     if [ $use_ani == 0 ]; then
         imgshl_stitch_images __images $scale $cache_dir
-        imgshl_display_images "$display_file" $pixel_perfect
-        imgshl_cleanup_images __images $cache $cache_dir
+        imgshl_display_image "$display_file" $pixel_perfect
+        imgshl_cleanup __images $cache $cache_dir
     else
         imgshl_stitch_ani_images __images $scale $cache $cache_dir
-        imgshl_display_ani_images "$display_file"
+        imgshl_display_ani_image "$display_file"
     fi
 }
