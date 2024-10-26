@@ -61,7 +61,7 @@ case "$#" in
         true_gender=0
 
         if [ "$1" == '-r' ] || [ "$1" == '--remove-cache' ]; then
-            rm -r -v "$cache_dir"
+            rm -r -v "$cache_dir" | grep -v "removed '"
             exit
         elif [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
             use_small=1
