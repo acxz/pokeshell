@@ -436,5 +436,6 @@ case "$#" in
 esac
 
 scale=0
+trim=1
 pixel_perfect=1
-imgshl_display images $use_ani $scale $pixel_perfect $cache "$cache_dir"
+imgshl_display images $use_ani $scale $trim $pixel_perfect $cache "$cache_dir"
