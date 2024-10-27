@@ -86,7 +86,7 @@ where `POKESHELL_COMMAND` is what you would run in the terminal.
 For example, including the below in your `neofetch` config file
 ```
 image_backend="ascii"
-image_source=${pokeshell politoed)
+image_source=$(pokeshell politoed)
 ```
 and running `neowofetch` gives the following:
 
