@@ -86,8 +86,11 @@ function imgshl_display_image () {
     pixel_perfect=${2:?}
 
     if [ $pixel_perfect == 1 ]; then
-        # pre scale for pixel perfect chafa
-        chafa -w 1 --symbols all --scale 8 "${display_file}"
+        if type timg >/dev/null 2>/dev/null; then
+            timg -b none "${display_file}"
+        else
+            chafa -w 1 --symbols all --scale 8 "${display_file}"
+        fi
     else
         chafa --symbols all "$display_file"
     fi
