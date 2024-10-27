@@ -10,7 +10,7 @@ Key features include:
 
 ## Dependencies
 
-| - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [chafa](https://github.com/hpjansson/chafa/) |
+| - [bash](https://www.gnu.org/software/bash/) | - [curl](https://curl.se/) | - [jq](https://stedolan.github.io/jq/) | - [imagemagick](https://imagemagick.org/) | - [timg](https://github.com/hzeller/timg)/[chafa](https://github.com/hpjansson/chafa/) |
 |:-:|:-:|:-:|:-:|:-:|
 
 ## Installation
@@ -58,7 +58,7 @@ pokeshell --help
 
 or if running from this directory:
 ```bash
-./pokeshell --help
+./bin/pokeshell --help
 ```
 
 ## Examples
@@ -139,7 +139,7 @@ is faster
     Show Pokemon sprites in Kitty
 - [eramdam/pokemonshow](https://github.com/eramdam/pokemonshow)
     Show Pokemon sprites using JavaScript
-- [yannjor/krabby](https://github.com/yannjor/krabby)
+- [talwat/pokeget-rs](https://github.com/talwat/pokeget-rs)
     Show Pokemon sprites using Rust
 
 ## Other Pokémon Sprite Terminal Projects
