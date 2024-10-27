@@ -108,30 +108,31 @@ pokeshell is not the first player in the pokemon shell art niche and nor will it
 be the last. (I just hope that the next project can take these ideas and only
 expand on them.) Below is a feature list of some projects (
 [acxz/pokescript](https://github.com/acxz/pokescript),
-[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts))
+[phoneybadger/pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts),
+[talwat/pokeget-rs](https://github.com/talwat/pokeget-rs))
 that also fill this role and what makes `pokeshell` unique among them.
 
-| **Feature**      | **pokeshell** | **pokescript** | **colorscripts** |
-|:----------------:|:-------------:|:--------------:|:----------------:|
-| random           | ✔️             | ✔️              | ✔️                |
-| small            | ✔️             | ✔️              | ✔️                |
-| big              | ✔️             | ❌             | ❌               |
-| animated         | ✔️             | ❌             | ❌               |
-| terminal fit     | ✔️             | ❌             | ❌               |
-| genders          | ✔️             | ✔️              | ❌               |
-| multiple pokemon | ✔️             | ✔️              | ❌               |
-| tab completion   | ✔️             | ✔️              | ❌               |
-| no internet      | ❌            | ✔️              | ✔️                |
-| block size <sup>#</sup>      | ANSI | half        | half             |
-| # dependencies <sup>-</sup>  | 5  | 1             | 1                |
-| cached speed <sup>+</sup>    | 1x | 5.8x          | 1.2x             |
-| first run speed <sup>+</sup> | 1x | 16x           | 3x               |
+| **Feature**      | **pokeshell** | **pokescript** | **colorscripts** | **pokeget-rs** |
+|:----------------:|:-------------:|:--------------:|:----------------:|:--------------:|
+| random           | ✔️             | ✔️              | ✔️                | ✔️              |
+| small            | ✔️             | ✔️              | ✔️                | ✔️              |
+| big              | ✔️             | ❌             | ❌               | ❌             |
+| animated         | ✔️             | ❌             | ❌               | ❌             |
+| terminal fit     | ✔️             | ❌             | ❌               | ❌             |
+| genders          | ✔️             | ✔️              | ❌               | ❌             |
+| multiple pokemon | ✔️             | ✔️              | ❌               | ✔️              |
+| tab completion   | ✔️             | ✔️              | ❌               | ❌             |
+| no internet      | ❌            | ✔️              | ✔️                | ✔️              |
+| block size <sup>#</sup>      | ANSI          | half         | half         | half          |
+| # dependencies <sup>-</sup>  | 5             | 1            | 1            | 0             |
+| cached speed <sup>+</sup>    | 1x (76.9 ms)  | 11x (7.1 ms) | 2x (37.5 ms) | 37x  (2.1 ms) |
+| first run speed <sup>+</sup> | 1x (241.2 ms) | 34x (7.1 ms) | 6x (37.5 ms) | 115x (2.1 ms) |
 
-<sup>#</sup>: in order of resolution: ANSI > half > full
+<sup>#</sup>: in order of resolution: ANSI > half
 
-<sup>-</sup>: pokeshell uses bash, colorscripts uses Python
+<sup>-</sup>: pokeshell/pokescript uses bash, colorscripts uses python, pokeget-rs uses rust
 
-<sup>+</sup>: Normalized to pokeshell, tested with average of 500 runs, larger
+<sup>+</sup>: Normalized to pokeshell, tested with [hyperfine](https://github.com/sharkdp/hyperfine), larger
 is faster
 
 ### Other Similar Projects
@@ -139,8 +140,6 @@ is faster
     Show Pokemon sprites in Kitty
 - [eramdam/pokemonshow](https://github.com/eramdam/pokemonshow)
     Show Pokemon sprites using JavaScript
-- [talwat/pokeget-rs](https://github.com/talwat/pokeget-rs)
-    Show Pokemon sprites using Rust
 
 ## Other Pokémon Sprite Terminal Projects
 - [rmccorm4/Pokefetch](https://github.com/rmccorm4/pokefetch)
