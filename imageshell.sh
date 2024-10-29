@@ -92,7 +92,7 @@ function imgshl_display_image () {
             chafa -w 1 --symbols all --scale 8 "${display_file}"
         fi
     else
-        chafa --symbols all "$display_file"
+        chafa -w 9 --symbols all "$display_file"
     fi
 }
 
@@ -240,7 +240,7 @@ function imgshl_stitch_ani_images () {
 function imgshl_display_ani_image () {
     local display_file
     display_file="${1:?}"
-    chafa --format symbols --symbols all "$display_file"
+    chafa -w 9 --format symbols --symbols all "$display_file"
 }
 
 function imgshl_display () {
