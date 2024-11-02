@@ -24,7 +24,7 @@ _help() {
 
     echo ""
 
-    echo "Gender: append \"+m(ale)/+f(emale)\" to POKEMON"
+    echo "Gender: append \"+♂/m(ale) or +♀/f(emale)\" to POKEMON"
     echo "default: use gender ratio of pokemon"
 
     echo ""
@@ -37,7 +37,7 @@ _help() {
 
     echo "Examples: pokeshell pikachu"
     echo "          pokeshell s:nidoran-f+f nidoran-m"
-    echo "          pokeshell -s s:bulbasaur+m ns:pikachu+f venusaur"
+    echo "          pokeshell -s s:bulbasaur+♂ ns:pikachu+♀ venusaur"
     echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
     echo "          pokeshell -a random s:pikachu-gmax"
     echo "          pokeshell random,1,3+f s:random,4,1"
@@ -237,7 +237,7 @@ case "$#" in
                 fi
             fi
 
-            if [ $gender_str = 'male' ] || [ $gender_str = 'm' ]; then
+            if [ $gender_str = 'male' ] || [ $gender_str = 'm' ] || [ $gender_str = '♂' ]; then
                 if [ "$gender_rate" = '8' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be female!"
@@ -257,7 +257,7 @@ case "$#" in
                 else
                     gender=male
                 fi
-            elif [ $gender_str = 'female' ] || [ $gender_str = 'f' ]; then
+            elif [ $gender_str = 'female' ] || [ $gender_str = 'f' ] || [ $gender_str = '♀' ]; then
                 if [ $gender_rate = '0' ]; then
                     if [ $is_random = 0 ]; then
                         echo "$pokemon must be male!"
