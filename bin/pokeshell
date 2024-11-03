@@ -171,6 +171,10 @@ case "$#" in
                 # TODO
             fi
 
+            # Get canonical name from input name
+            # Lowercase
+            pokemon=$(echo "$pokemon" | tr '[:upper:]' '[:lower:]')
+
             # meowstic is weird in pokeapi (upstream issue?)
             # male shiny is actually female shiny?
             if [ "$pokemon" == 'meowstic' ]; then
