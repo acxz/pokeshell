@@ -98,7 +98,7 @@ A great amount of gratitude goes to the following projects, without which
 
 Small sprites: [msikma/pokesprite](https://github.com/msikma/pokesprite)
 
-Big sprites: [PokeAPI](https://pokeapi.co/)
+Big sprites and localization: [PokeAPI](https://pokeapi.co/)
 - Specifically: [PokeAPI/pokeapi](https://github.com/PokeAPI/pokeapi) and [PokeAPI/sprites](https://github.com/PokeAPI/sprites)
 
 Animated sprites: [ProjectPokemon](https://projectpokemon.org/home/docs/spriteindex_148)

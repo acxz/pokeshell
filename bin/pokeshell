@@ -175,6 +175,14 @@ case "$#" in
             # Lowercase
             pokemon=$(echo "$pokemon" | tr '[:upper:]' '[:lower:]')
 
+            # Check if pokemon is a known identifier (id, canonical name, localized name)
+            input_pokemon="$pokemon"
+            pokemon=$(jq -r '."'"$pokemon"'"' "$MY_DIR/../share/pokemon_identifiers.json")
+            # If identifier not found in our list, fall back to each backend's list
+            if [ "$pokemon" == "null" ]; then
+                pokemon="$input_pokemon"
+            fi
+
             # meowstic is weird in pokeapi (upstream issue?)
             # male shiny is actually female shiny?
             if [ "$pokemon" == 'meowstic' ]; then
