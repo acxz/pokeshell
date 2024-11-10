@@ -56,8 +56,8 @@ case "$#" in
         use_ani=0
         cache=1
         cache_dir="$HOME/.cache/pokeshell"
-        start_idx=1
-        flagged=0
+        first_pokemon_idx=1
+        last_flag_idx=0
         true_gender=0
 
         if [ "$1" == '-r' ] || [ "$1" == '--remove-cache' ]; then
@@ -65,21 +65,21 @@ case "$#" in
             exit
         elif [ "$1" == '-s' ] || [ "$1" == '--small' ]; then
             use_small=1
-            start_idx=2
-            flagged=1
+            first_pokemon_idx=$((first_pokemon_idx+1))
+            last_flag_idx=$((last_flag_idx+1))
         elif [ "$1" == '-a' ] || [ "$1" == '--animation' ]; then
             use_ani=1
-            start_idx=2
-            flagged=1
+            first_pokemon_idx=$((first_pokemon_idx+1))
+            last_flag_idx=$((last_flag_idx+1))
         elif [ "$1" == '-b' ] || [ "$1" == '--big' ]; then
-            start_idx=2
-            flagged=1
+            first_pokemon_idx=$((first_pokemon_idx+1))
+            last_flag_idx=$((last_flag_idx+1))
         elif [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
             _help
             exit
         fi
 
-        if [ $# == 1 ] && [ $flagged == 1 ]; then
+        if [ $# == 1 ] && [ $last_flag_idx == 1 ]; then
             _help
             echo ""
             echo "You forgot to mention any Pokemon! See help."
@@ -88,7 +88,7 @@ case "$#" in
 
         # Parse description
         images=()
-        for desc in "${@:$start_idx}"; do
+        for desc in "${@:$first_pokemon_idx}"; do
             # Parse for shiny
             IFS=':' read -ra desc_arr <<< "$desc"
             if [ ${#desc_arr[@]} == 1 ]; then
