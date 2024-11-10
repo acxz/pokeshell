@@ -8,13 +8,12 @@ Generates pokemon identifiers (such as localized names) using [PokeAPI]() that t
 
 ## Dependencies
 
-- [python]()
-- [python-requests]()
+- [uv](https://docs.astral.sh/uv/)
 
 ## Usage
 
 ```bash
-python create_pokemon_identifiers.py
+uv run create_pokemon_identifiers.py
 ```
 
 ## `timing.sh`
@@ -23,19 +22,21 @@ Times various Pokemon terminal display projects.
 
 ## Dependencies
 
-- [bash]()
-- [bc]()
-- [hyperfine]()
+- [bash](https://www.gnu.org/software/bash/)
+- [hyperfine](https://github.com/sharkdp/hyperfine/tree/master)
+- [uv](https://docs.astral.sh/uv/)
 
-- [pokeshell]()
-- [pokescript]()
-- [pokemon-colorscripts]()
-- [pokemon-pokeget]()
-
-# TODO: calculate stats (multipliers (maybe using bc?), times)
+- [pokemon-colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts)
+- [pokeget-rs](https://github.com/talwat/pokeget-rs)
+- [pokescript](https://github.com/acxz/pokescript)
+- [pokeshell](https://github.com/acxz/pokeshell)
 
 ## Usage
+
+Run:
 
 ```bash
 ./timing.sh
 ```
+
+Then open `timing.png`.
