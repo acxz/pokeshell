@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# /// script
+# dependencies = [
+#     "requests",
+# ]
+# ///
+
 # Script to create a mapping between various identifiers for the same pokemon
 
 import requests
