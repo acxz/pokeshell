@@ -42,6 +42,8 @@ _help() {
     echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
     echo "          pokeshell -a -n random s:pikachu-gmax"
     echo "          pokeshell -n random,1,3+f s:random,4,1"
+    echo "          pokeshell bulbasaur BULBASAUR 1 フシギダネ fushigidane"
+    echo "          pokeshell s:이상해씨 妙蛙種子+♀ Bulbizarre Bisasam"
     echo "          pokeshell type-null farfetchd sirfetchd"
 }
 
