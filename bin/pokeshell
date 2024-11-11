@@ -15,6 +15,7 @@ _help() {
         "-b, --big" "Display big sprites (default)" \
         "-a, --animation" "Display animated sprites" \
         "-s, --small" "Display small sprites" \
+        "-n, --show-name" "Show names of displayed Pokemon" \
         "-r, --remove-cache" "Remove cache directory" \
         "-h, --help" "Print this help" \
 
@@ -39,12 +40,12 @@ _help() {
     echo "          pokeshell s:nidoran-f+f nidoran-m"
     echo "          pokeshell -s s:bulbasaur+♂ ns:pikachu+♀ venusaur"
     echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
-    echo "          pokeshell -a random s:pikachu-gmax"
-    echo "          pokeshell random,1,3+f s:random,4,1"
+    echo "          pokeshell -a -n random s:pikachu-gmax"
+    echo "          pokeshell -n random,1,3+f s:random,4,1"
     echo "          pokeshell type-null farfetchd sirfetchd"
 }
 
-# Handling command line arguments
+# Handling command line arguments (ghetto getopt)
 case "$#" in
     0)
         # display help if no arguments are given
@@ -54,12 +55,14 @@ case "$#" in
     *)
         use_small=0
         use_ani=0
+        show_name=0
         cache=1
         cache_dir="$HOME/.cache/pokeshell"
         first_pokemon_idx=1
         last_flag_idx=0
         true_gender=0
 
+        # First flag
         if [ "$1" == '-r' ] || [ "$1" == '--remove-cache' ]; then
             rm -r -v "$cache_dir" | grep -v "removed '"
             exit
@@ -77,9 +80,30 @@ case "$#" in
         elif [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
             _help
             exit
+        elif [ "$1" == '-n' ] || [ "$1" == '--show-name' ]; then
+            show_name=1
+            first_pokemon_idx=$((first_pokemon_idx+1))
+            last_flag_idx=$((last_flag_idx+1))
         fi
 
+        # Second flag
+        # minor fixme: check if last_flag_idx has been incremented
+        if [ "$2" == '-n' ] || [ "$2" == '--show-name' ]; then
+            show_name=1
+            first_pokemon_idx=$((first_pokemon_idx+1))
+            last_flag_idx=$((last_flag_idx+1))
+        fi
+
+        # Check if any pokemon listed
+        # minor fixme: ||/or the below two if statements
         if [ $# == 1 ] && [ $last_flag_idx == 1 ]; then
+            _help
+            echo ""
+            echo "You forgot to mention any Pokemon! See help."
+            exit
+        fi
+
+        if [ $# == 2 ] && [ $last_flag_idx == 2 ]; then
             _help
             echo ""
             echo "You forgot to mention any Pokemon! See help."
@@ -310,7 +334,10 @@ case "$#" in
             cache_dir="$HOME/.cache/pokeshell"
             mkdir -p "$cache_dir"
             desc_full="${_type}:$pokemon+${gender}"
-            if [ "$is_random" == 1 ]; then
+            if [ "$show_name" == 1 ]; then
+                # TODO: show name in various languages, potentially with a
+                # -n=ja, --show-name=es, --show-name=japanese, etc.
+                # TODO: for gender use ♂/♀
                 echo "$desc_full"
             fi
 
