@@ -5,8 +5,8 @@ A shell program to show pokemon sprites in the terminal.
 
 Key features include:
 
-| ✔️ animated sprites | ✔️ multiple pokemon | ✔️ terminal fit | ✔️ tab completions |
-|:-:|:-:|:-:|:-:|
+| ✔️ animated sprites | ✔️ multiple pokemon | ✔️ multilingual | ✔️ terminal fit | ✔️ tab completions |
+|:-:|:-:|:-:|:-:|:-:|
 
 ## Dependencies
 
@@ -119,9 +119,10 @@ that also fill this role and what makes `pokeshell` unique among them.
 | big              | ✔️             | ❌             | ❌               | ❌             |
 | animated         | ✔️             | ❌             | ❌               | ❌             |
 | terminal fit     | ✔️             | ❌             | ❌               | ❌             |
+| multilingual     | ✔️             | ✔️              | ❌               | ❌             |
 | genders          | ✔️             | ✔️              | ❌               | ❌             |
-| multiple pokemon | ✔️             | ✔️              | ❌               | ✔️              |
 | tab completion   | ✔️             | ✔️              | ❌               | ❌             |
+| multiple pokemon | ✔️             | ✔️              | ❌               | ✔️              |
 | no internet      | ❌            | ✔️              | ✔️                | ✔️              |
 | block size <sup>#</sup>      | ANSI          | half         | half         | half          |
 | # dependencies <sup>-</sup>  | 5             | 1            | 1            | 0             |
