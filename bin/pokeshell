@@ -20,8 +20,10 @@ _help() {
         "-h, --help" "Print this help" \
 
     echo ""
-    echo "Shiny: prepend \"✨/s(hiny):\" to POKEMON"
-    echo "default: use shiny rate of 1/4096"
+    echo "Shiny: prepend \"✨/s(hiny):\" or \"ns/not-shiny:\""
+    echo "               or \"all:\" to POKEMON"
+    echo "       prepending nothing uses the base shiny rate of 1/4096"
+    echo "       prepending \"all:\" specifies shiny and not shiny"
 
     echo ""
 
@@ -37,14 +39,14 @@ _help() {
     echo ""
 
     echo "Examples: pokeshell pikachu"
-    echo "          pokeshell s:nidoran-f+f nidoran-m"
-    echo "          pokeshell -s s:bulbasaur+♂ ns:pikachu+♀ venusaur"
+    echo "          pokeshell s:pikachu+♂ ns:pikachu+♀"
+    echo "          pokeshell -s all:bulbasaur all:charmander"
     echo "          pokeshell -b charizard-mega-x+male ✨:ho-oh moltres-galar"
     echo "          pokeshell -a -n random s:pikachu-gmax"
     echo "          pokeshell -n random,1,3+f s:random,4,1"
     echo "          pokeshell bulbasaur BULBASAUR 1 フシギダネ fushigidane"
     echo "          pokeshell s:이상해씨 妙蛙種子+♀ Bulbizarre Bisasam"
-    echo "          pokeshell type-null farfetchd sirfetchd"
+    echo "          pokeshell nidoran-f+f nidoran-m type-null farfetchd sirfetchd"
 }
 
 # Handling command line arguments (ghetto getopt)
@@ -114,7 +116,13 @@ case "$#" in
 
         # Parse description
         images=()
-        for desc in "${@:$first_pokemon_idx}"; do
+        descriptions=( "${@:$first_pokemon_idx}" )
+        while [[ ${#descriptions[@]} != 0 ]]; do
+
+            # Pop the first desc from descriptions as we are about to parse it
+            desc="${descriptions[0]}"
+            descriptions=("${descriptions[@]:1}")
+
             # Parse for shiny
             IFS=':' read -ra desc_arr <<< "$desc"
             if [ ${#desc_arr[@]} == 1 ]; then
@@ -149,6 +157,11 @@ case "$#" in
                 _type=shiny
             elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
                 _type=not-shiny
+            elif [ $shiny_str = 'all' ]; then
+                # Continue processing this desc as shiny and prepend a not-shiny desc to the descriptions
+                _type=shiny
+                desc="not-shiny:${pokemon}+${gender_str}"
+                descriptions=("${desc}" "${descriptions[@]}")
             else
                 _help
                 echo ""
