@@ -20,8 +20,8 @@ _help() {
         "-h, --help" "Print this help" \
 
     echo ""
-    echo "Shiny: prepend \"s(hiny):\" to POKEMON"
-    echo "default: use shiny ratio of 1/8192"
+    echo "Shiny: prepend \"✨/s(hiny):\" to POKEMON"
+    echo "default: use shiny rate of 1/4096"
 
     echo ""
 
@@ -39,7 +39,7 @@ _help() {
     echo "Examples: pokeshell pikachu"
     echo "          pokeshell s:nidoran-f+f nidoran-m"
     echo "          pokeshell -s s:bulbasaur+♂ ns:pikachu+♀ venusaur"
-    echo "          pokeshell -b charizard-mega-x+male s:ho-oh moltres-galar"
+    echo "          pokeshell -b charizard-mega-x+male ✨:ho-oh moltres-galar"
     echo "          pokeshell -a -n random s:pikachu-gmax"
     echo "          pokeshell -n random,1,3+f s:random,4,1"
     echo "          pokeshell bulbasaur BULBASAUR 1 フシギダネ fushigidane"
@@ -138,14 +138,14 @@ case "$#" in
             if [ -z "$shiny_str" ]; then
                 # Random shiny chance
                 shiny_str='not-shiny'
-                shiny_rate=8192
+                shiny_rate=4096
                 shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
                 if [ "$shiny_chance" = "$shiny_rate" ]; then
                     shiny_str='shiny'
                 fi
             fi
 
-            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ]; then
+            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ] || [ $shiny_str = '✨' ]; then
                 _type=shiny
             elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
                 _type=not-shiny
