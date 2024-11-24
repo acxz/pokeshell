@@ -146,33 +146,6 @@ case "$#" in
                 gender_str=${desc_arr[1]}
             fi
 
-            if [ -z "$shiny_str" ]; then
-                # Random shiny chance
-                shiny_str='not-shiny'
-                shiny_rate=4096
-                shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
-                if [ "$shiny_chance" = "$shiny_rate" ]; then
-                    shiny_str='shiny'
-                fi
-            fi
-
-            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ] || [ $shiny_str = '✨' ]; then
-                _type=shiny
-            elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
-                _type=not-shiny
-            elif [ $shiny_str = 'all' ]; then
-                # After expanding all shiny options for this pokemon, continue to next iteration
-                not_shiny_desc="not-shiny:${pokemon}+${gender_str}"
-                shiny_desc="shiny:${pokemon}+${gender_str}"
-                descriptions=("${not_shiny_desc}" "${shiny_desc}" "${descriptions[@]}")
-                continue
-            else
-                _help
-                echo ""
-                echo "Incorrect shiny specifier! See help."
-                exit
-            fi
-
             # Parse for random
             # Delimit pokemon on comma to see if we are using random gens
             is_random=0
@@ -275,6 +248,34 @@ case "$#" in
                 pokemon=meowstic
                 gender_rate=4
             fi
+
+            if [ -z "$shiny_str" ]; then
+                # Random shiny chance
+                shiny_str='not-shiny'
+                shiny_rate=4096
+                shiny_chance=$(shuf -i 1-"$shiny_rate" -n 1)
+                if [ "$shiny_chance" = "$shiny_rate" ]; then
+                    shiny_str='shiny'
+                fi
+            fi
+
+            if [ $shiny_str = 'shiny' ] || [ $shiny_str = 's' ] || [ $shiny_str = '✨' ]; then
+                _type=shiny
+            elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
+                _type=not-shiny
+            elif [ $shiny_str = 'all' ]; then
+                # After expanding all shiny options for this pokemon, continue to next iteration
+                not_shiny_desc="not-shiny:${pokemon}+${gender_str}"
+                shiny_desc="shiny:${pokemon}+${gender_str}"
+                descriptions=("${not_shiny_desc}" "${shiny_desc}" "${descriptions[@]}")
+                continue
+            else
+                _help
+                echo ""
+                echo "Incorrect shiny specifier! See help."
+                exit
+            fi
+
 
             if [ -z "$gender_str" ]; then
 
