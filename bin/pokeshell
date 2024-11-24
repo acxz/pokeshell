@@ -27,8 +27,10 @@ _help() {
 
     echo ""
 
-    echo "Gender: append \"+♂/m(ale) or +♀/f(emale)\" to POKEMON"
-    echo "default: use gender ratio of pokemon"
+    echo "Gender: append \"+♂/m(ale)\" or \"+♀/f(emale)\""
+    echo "               or \"+all\" to POKEMON"
+    echo "        appending nothing uses the gender ratio of pokemon"
+    echo "        appending \"+all\" specifies both male and female"
 
     echo ""
 
@@ -40,9 +42,10 @@ _help() {
 
     echo "Examples: pokeshell pikachu"
     echo "          pokeshell s:pikachu+♂ ns:pikachu+♀"
-    echo "          pokeshell -s all:bulbasaur all:charmander"
+    echo "          pokeshell all:pikachu+all"
+    echo "          pokeshell -s random s:pikachu-gmax"
     echo "          pokeshell -b charizard-mega-x+male ✨:ho-oh moltres-galar"
-    echo "          pokeshell -a -n random s:pikachu-gmax"
+    echo "          pokeshell -a -n all:bulbasaur pikachu+all"
     echo "          pokeshell -n random,1,3+f s:random,4,1"
     echo "          pokeshell bulbasaur BULBASAUR 1 フシギダネ fushigidane"
     echo "          pokeshell s:이상해씨 妙蛙種子+♀ Bulbizarre Bisasam"
@@ -158,10 +161,11 @@ case "$#" in
             elif [ $shiny_str = 'not-shiny' ] || [ $shiny_str = 'ns' ]; then
                 _type=not-shiny
             elif [ $shiny_str = 'all' ]; then
-                # Continue processing this desc as shiny and prepend a not-shiny desc to the descriptions
-                _type=shiny
-                desc="not-shiny:${pokemon}+${gender_str}"
-                descriptions=("${desc}" "${descriptions[@]}")
+                # After expanding all shiny options for this pokemon, continue to next iteration
+                not_shiny_desc="not-shiny:${pokemon}+${gender_str}"
+                shiny_desc="shiny:${pokemon}+${gender_str}"
+                descriptions=("${not_shiny_desc}" "${shiny_desc}" "${descriptions[@]}")
+                continue
             else
                 _help
                 echo ""
@@ -338,6 +342,23 @@ case "$#" in
                     # use default gender of male
                     gender=male
                 fi
+            elif [ $gender_str = 'all' ]; then
+                # After expanding all gender options for this pokemon, continue to next iteration
+                if [ $gender_rate = '0' ]; then
+                    desc="${shiny_str}:${pokemon}+male"
+                    descriptions=("${desc}" "${descriptions[@]}")
+                elif [ "$gender_rate" = '8' ]; then
+                    desc="${shiny_str}:${pokemon}+female"
+                    descriptions=("${desc}" "${descriptions[@]}")
+                elif [ "$gender_rate" = '-1' ]; then
+                    desc="${shiny_str}:${pokemon}"
+                    descriptions=("${desc}" "${descriptions[@]}")
+                else
+                    desc_male="${shiny_str}:${pokemon}+male"
+                    desc_female="${shiny_str}:${pokemon}+female"
+                    descriptions=("${desc_male}" "${desc_female}" "${descriptions[@]}")
+                fi
+                continue
             else
                 _help
                 echo ""
